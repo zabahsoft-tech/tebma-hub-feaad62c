@@ -9,17 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as StylesRouteImport } from './routes/styles'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as DictionaryRouteImport } from './routes/dictionary'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as StylesSlugRouteImport } from './routes/styles.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as DictionarySlugRouteImport } from './routes/dictionary.$slug'
 
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StylesRoute = StylesRouteImport.update({
   id: '/styles',
   path: '/styles',
@@ -35,6 +44,11 @@ const NewsRoute = NewsRouteImport.update({
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MembershipRoute = MembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -43,6 +57,11 @@ const GalleryRoute = GalleryRouteImport.update({
 const DictionaryRoute = DictionaryRouteImport.update({
   id: '/dictionary',
   path: '/dictionary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -54,6 +73,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyCodeRoute = VerifyCodeRouteImport.update({
+  id: '/$code',
+  path: '/$code',
+  getParentRoute: () => VerifyRoute,
 } as any)
 const StylesSlugRoute = StylesSlugRouteImport.update({
   id: '/$slug',
@@ -74,91 +98,125 @@ const DictionarySlugRoute = DictionarySlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/dictionary': typeof DictionaryRouteWithChildren
   '/gallery': typeof GalleryRoute
+  '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
   '/rules': typeof RulesRoute
   '/styles': typeof StylesRouteWithChildren
+  '/verify': typeof VerifyRouteWithChildren
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
+  '/verify/$code': typeof VerifyCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/dictionary': typeof DictionaryRouteWithChildren
   '/gallery': typeof GalleryRoute
+  '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
   '/rules': typeof RulesRoute
   '/styles': typeof StylesRouteWithChildren
+  '/verify': typeof VerifyRouteWithChildren
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
+  '/verify/$code': typeof VerifyCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/dictionary': typeof DictionaryRouteWithChildren
   '/gallery': typeof GalleryRoute
+  '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
   '/rules': typeof RulesRoute
   '/styles': typeof StylesRouteWithChildren
+  '/verify': typeof VerifyRouteWithChildren
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
+  '/verify/$code': typeof VerifyCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/contact'
     | '/dictionary'
     | '/gallery'
+    | '/membership'
     | '/news'
     | '/rules'
     | '/styles'
+    | '/verify'
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/styles/$slug'
+    | '/verify/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/contact'
     | '/dictionary'
     | '/gallery'
+    | '/membership'
     | '/news'
     | '/rules'
     | '/styles'
+    | '/verify'
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/styles/$slug'
+    | '/verify/$code'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/contact'
     | '/dictionary'
     | '/gallery'
+    | '/membership'
     | '/news'
     | '/rules'
     | '/styles'
+    | '/verify'
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/styles/$slug'
+    | '/verify/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
   DictionaryRoute: typeof DictionaryRouteWithChildren
   GalleryRoute: typeof GalleryRoute
+  MembershipRoute: typeof MembershipRoute
   NewsRoute: typeof NewsRouteWithChildren
   RulesRoute: typeof RulesRoute
   StylesRoute: typeof StylesRouteWithChildren
+  VerifyRoute: typeof VerifyRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/styles': {
       id: '/styles'
       path: '/styles'
@@ -180,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/membership': {
+      id: '/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof MembershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gallery': {
       id: '/gallery'
       path: '/gallery'
@@ -192,6 +257,13 @@ declare module '@tanstack/react-router' {
       path: '/dictionary'
       fullPath: '/dictionary'
       preLoaderRoute: typeof DictionaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -207,6 +279,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/verify/$code': {
+      id: '/verify/$code'
+      path: '/$code'
+      fullPath: '/verify/$code'
+      preLoaderRoute: typeof VerifyCodeRouteImport
+      parentRoute: typeof VerifyRoute
     }
     '/styles/$slug': {
       id: '/styles/$slug'
@@ -265,14 +344,28 @@ const StylesRouteChildren: StylesRouteChildren = {
 const StylesRouteWithChildren =
   StylesRoute._addFileChildren(StylesRouteChildren)
 
+interface VerifyRouteChildren {
+  VerifyCodeRoute: typeof VerifyCodeRoute
+}
+
+const VerifyRouteChildren: VerifyRouteChildren = {
+  VerifyCodeRoute: VerifyCodeRoute,
+}
+
+const VerifyRouteWithChildren =
+  VerifyRoute._addFileChildren(VerifyRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
   DictionaryRoute: DictionaryRouteWithChildren,
   GalleryRoute: GalleryRoute,
+  MembershipRoute: MembershipRoute,
   NewsRoute: NewsRouteWithChildren,
   RulesRoute: RulesRoute,
   StylesRoute: StylesRouteWithChildren,
+  VerifyRoute: VerifyRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

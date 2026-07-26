@@ -46,7 +46,7 @@ function VerifyResult() {
             <dl className="divide-y divide-border">
               <Row label="Code" value={data.certificate.code} />
               <Row label="Holder" value={data.certificate.holder_name} />
-              <Row label="Rank" value={data.certificate.rank} />
+              <Row label="Rank" value={data.certificate.rank ?? "—"} />
               <Row label="Discipline" value={data.certificate.style_name} />
               {data.certificate.country ? <Row label="Country" value={data.certificate.country} /> : null}
               <Row label="Issued" value={new Date(data.certificate.issued_on).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} />
