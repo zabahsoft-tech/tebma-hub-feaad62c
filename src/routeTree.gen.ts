@@ -60,6 +60,7 @@ import { Route as AuthenticatedAdminDictionaryIdRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminCertificatesNewRouteImport } from './routes/_authenticated/admin.certificates.new'
 import { Route as AuthenticatedAdminCertificatesIdRouteImport } from './routes/_authenticated/admin.certificates.$id'
 import { Route as AuthenticatedAdminCategoriesNewRouteImport } from './routes/_authenticated/admin.categories.new'
+import { Route as AuthenticatedAdminCategoriesIdRouteImport } from './routes/_authenticated/admin.categories.$id'
 
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
@@ -343,6 +344,12 @@ const AuthenticatedAdminCategoriesNewRoute =
     path: '/new',
     getParentRoute: () => AuthenticatedAdminCategoriesRoute,
   } as any)
+const AuthenticatedAdminCategoriesIdRoute =
+  AuthenticatedAdminCategoriesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminCategoriesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -374,6 +381,7 @@ export interface FileRoutesByFullPath {
   '/admin/rules': typeof AuthenticatedAdminRulesRouteWithChildren
   '/admin/styles': typeof AuthenticatedAdminStylesRouteWithChildren
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/categories/$id': typeof AuthenticatedAdminCategoriesIdRoute
   '/admin/categories/new': typeof AuthenticatedAdminCategoriesNewRoute
   '/admin/certificates/$id': typeof AuthenticatedAdminCertificatesIdRoute
   '/admin/certificates/new': typeof AuthenticatedAdminCertificatesNewRoute
@@ -418,6 +426,7 @@ export interface FileRoutesByTo {
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/categories/$id': typeof AuthenticatedAdminCategoriesIdRoute
   '/admin/categories/new': typeof AuthenticatedAdminCategoriesNewRoute
   '/admin/certificates/$id': typeof AuthenticatedAdminCertificatesIdRoute
   '/admin/certificates/new': typeof AuthenticatedAdminCertificatesNewRoute
@@ -472,6 +481,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/rules': typeof AuthenticatedAdminRulesRouteWithChildren
   '/_authenticated/admin/styles': typeof AuthenticatedAdminStylesRouteWithChildren
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/categories/$id': typeof AuthenticatedAdminCategoriesIdRoute
   '/_authenticated/admin/categories/new': typeof AuthenticatedAdminCategoriesNewRoute
   '/_authenticated/admin/certificates/$id': typeof AuthenticatedAdminCertificatesIdRoute
   '/_authenticated/admin/certificates/new': typeof AuthenticatedAdminCertificatesNewRoute
@@ -526,6 +536,7 @@ export interface FileRouteTypes {
     | '/admin/rules'
     | '/admin/styles'
     | '/admin/'
+    | '/admin/categories/$id'
     | '/admin/categories/new'
     | '/admin/certificates/$id'
     | '/admin/certificates/new'
@@ -570,6 +581,7 @@ export interface FileRouteTypes {
     | '/admin/messages'
     | '/admin/pages'
     | '/admin'
+    | '/admin/categories/$id'
     | '/admin/categories/new'
     | '/admin/certificates/$id'
     | '/admin/certificates/new'
@@ -623,6 +635,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/rules'
     | '/_authenticated/admin/styles'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/categories/$id'
     | '/_authenticated/admin/categories/new'
     | '/_authenticated/admin/certificates/$id'
     | '/_authenticated/admin/certificates/new'
@@ -1022,16 +1035,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCategoriesNewRouteImport
       parentRoute: typeof AuthenticatedAdminCategoriesRoute
     }
+    '/_authenticated/admin/categories/$id': {
+      id: '/_authenticated/admin/categories/$id'
+      path: '/$id'
+      fullPath: '/admin/categories/$id'
+      preLoaderRoute: typeof AuthenticatedAdminCategoriesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminCategoriesRoute
+    }
   }
 }
 
 interface AuthenticatedAdminCategoriesRouteChildren {
+  AuthenticatedAdminCategoriesIdRoute: typeof AuthenticatedAdminCategoriesIdRoute
   AuthenticatedAdminCategoriesNewRoute: typeof AuthenticatedAdminCategoriesNewRoute
   AuthenticatedAdminCategoriesIndexRoute: typeof AuthenticatedAdminCategoriesIndexRoute
 }
 
 const AuthenticatedAdminCategoriesRouteChildren: AuthenticatedAdminCategoriesRouteChildren =
   {
+    AuthenticatedAdminCategoriesIdRoute: AuthenticatedAdminCategoriesIdRoute,
     AuthenticatedAdminCategoriesNewRoute: AuthenticatedAdminCategoriesNewRoute,
     AuthenticatedAdminCategoriesIndexRoute:
       AuthenticatedAdminCategoriesIndexRoute,
