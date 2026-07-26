@@ -78,7 +78,7 @@ function NewNews() {
           placeholder="One-sentence summary that appears in search results and social cards."
         />
         <RichEditor name="body" folder="news" placeholder="Write the full article. Use headings, lists, links, and images." />
-        <CheckField label="Publish immediately" name="published" />
+        <CheckField label="Publish immediately" name="published" defaultChecked />
         <SaveBar pending={pending} cancelTo="/admin/news" />
       </form>
     </AdminPage>
