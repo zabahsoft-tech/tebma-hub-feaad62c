@@ -41,6 +41,7 @@ import { Route as AuthenticatedAdminCertificatesRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminCategoriesRouteImport } from './routes/_authenticated/admin.categories'
 import { Route as AuthenticatedAdminStylesIndexRouteImport } from './routes/_authenticated/admin.styles.index'
 import { Route as AuthenticatedAdminRulesIndexRouteImport } from './routes/_authenticated/admin.rules.index'
+import { Route as AuthenticatedAdminPagesIndexRouteImport } from './routes/_authenticated/admin.pages.index'
 import { Route as AuthenticatedAdminNewsIndexRouteImport } from './routes/_authenticated/admin.news.index'
 import { Route as AuthenticatedAdminGalleryIndexRouteImport } from './routes/_authenticated/admin.gallery.index'
 import { Route as AuthenticatedAdminDictionaryIndexRouteImport } from './routes/_authenticated/admin.dictionary.index'
@@ -231,6 +232,12 @@ const AuthenticatedAdminRulesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminRulesRoute,
   } as any)
+const AuthenticatedAdminPagesIndexRoute =
+  AuthenticatedAdminPagesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminPagesRoute,
+  } as any)
 const AuthenticatedAdminNewsIndexRoute =
   AuthenticatedAdminNewsIndexRouteImport.update({
     id: '/',
@@ -377,7 +384,7 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/news': typeof AuthenticatedAdminNewsRouteWithChildren
-  '/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/admin/pages': typeof AuthenticatedAdminPagesRouteWithChildren
   '/admin/rules': typeof AuthenticatedAdminRulesRouteWithChildren
   '/admin/styles': typeof AuthenticatedAdminStylesRouteWithChildren
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -401,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
   '/admin/gallery/': typeof AuthenticatedAdminGalleryIndexRoute
   '/admin/news/': typeof AuthenticatedAdminNewsIndexRoute
+  '/admin/pages/': typeof AuthenticatedAdminPagesIndexRoute
   '/admin/rules/': typeof AuthenticatedAdminRulesIndexRoute
   '/admin/styles/': typeof AuthenticatedAdminStylesIndexRoute
 }
@@ -424,7 +432,6 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
-  '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/categories/$id': typeof AuthenticatedAdminCategoriesIdRoute
   '/admin/categories/new': typeof AuthenticatedAdminCategoriesNewRoute
@@ -446,6 +453,7 @@ export interface FileRoutesByTo {
   '/admin/dictionary': typeof AuthenticatedAdminDictionaryIndexRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryIndexRoute
   '/admin/news': typeof AuthenticatedAdminNewsIndexRoute
+  '/admin/pages': typeof AuthenticatedAdminPagesIndexRoute
   '/admin/rules': typeof AuthenticatedAdminRulesIndexRoute
   '/admin/styles': typeof AuthenticatedAdminStylesIndexRoute
 }
@@ -477,7 +485,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRouteWithChildren
-  '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
+  '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRouteWithChildren
   '/_authenticated/admin/rules': typeof AuthenticatedAdminRulesRouteWithChildren
   '/_authenticated/admin/styles': typeof AuthenticatedAdminStylesRouteWithChildren
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -501,6 +509,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
   '/_authenticated/admin/gallery/': typeof AuthenticatedAdminGalleryIndexRoute
   '/_authenticated/admin/news/': typeof AuthenticatedAdminNewsIndexRoute
+  '/_authenticated/admin/pages/': typeof AuthenticatedAdminPagesIndexRoute
   '/_authenticated/admin/rules/': typeof AuthenticatedAdminRulesIndexRoute
   '/_authenticated/admin/styles/': typeof AuthenticatedAdminStylesIndexRoute
 }
@@ -556,6 +565,7 @@ export interface FileRouteTypes {
     | '/admin/dictionary/'
     | '/admin/gallery/'
     | '/admin/news/'
+    | '/admin/pages/'
     | '/admin/rules/'
     | '/admin/styles/'
   fileRoutesByTo: FileRoutesByTo
@@ -579,7 +589,6 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/memberships'
     | '/admin/messages'
-    | '/admin/pages'
     | '/admin'
     | '/admin/categories/$id'
     | '/admin/categories/new'
@@ -601,6 +610,7 @@ export interface FileRouteTypes {
     | '/admin/dictionary'
     | '/admin/gallery'
     | '/admin/news'
+    | '/admin/pages'
     | '/admin/rules'
     | '/admin/styles'
   id:
@@ -655,6 +665,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/dictionary/'
     | '/_authenticated/admin/gallery/'
     | '/_authenticated/admin/news/'
+    | '/_authenticated/admin/pages/'
     | '/_authenticated/admin/rules/'
     | '/_authenticated/admin/styles/'
   fileRoutesById: FileRoutesById
@@ -902,6 +913,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRulesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRulesRoute
     }
+    '/_authenticated/admin/pages/': {
+      id: '/_authenticated/admin/pages/'
+      path: '/'
+      fullPath: '/admin/pages/'
+      preLoaderRoute: typeof AuthenticatedAdminPagesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminPagesRoute
+    }
     '/_authenticated/admin/news/': {
       id: '/_authenticated/admin/news/'
       path: '/'
@@ -1140,6 +1158,20 @@ const AuthenticatedAdminNewsRouteWithChildren =
     AuthenticatedAdminNewsRouteChildren,
   )
 
+interface AuthenticatedAdminPagesRouteChildren {
+  AuthenticatedAdminPagesIndexRoute: typeof AuthenticatedAdminPagesIndexRoute
+}
+
+const AuthenticatedAdminPagesRouteChildren: AuthenticatedAdminPagesRouteChildren =
+  {
+    AuthenticatedAdminPagesIndexRoute: AuthenticatedAdminPagesIndexRoute,
+  }
+
+const AuthenticatedAdminPagesRouteWithChildren =
+  AuthenticatedAdminPagesRoute._addFileChildren(
+    AuthenticatedAdminPagesRouteChildren,
+  )
+
 interface AuthenticatedAdminRulesRouteChildren {
   AuthenticatedAdminRulesIdRoute: typeof AuthenticatedAdminRulesIdRoute
   AuthenticatedAdminRulesNewRoute: typeof AuthenticatedAdminRulesNewRoute
@@ -1185,7 +1217,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminMembershipsRoute: typeof AuthenticatedAdminMembershipsRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRouteWithChildren
-  AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
+  AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRouteWithChildren
   AuthenticatedAdminRulesRoute: typeof AuthenticatedAdminRulesRouteWithChildren
   AuthenticatedAdminStylesRoute: typeof AuthenticatedAdminStylesRouteWithChildren
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -1203,7 +1235,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminMembershipsRoute: AuthenticatedAdminMembershipsRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRouteWithChildren,
-  AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
+  AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRouteWithChildren,
   AuthenticatedAdminRulesRoute: AuthenticatedAdminRulesRouteWithChildren,
   AuthenticatedAdminStylesRoute: AuthenticatedAdminStylesRouteWithChildren,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,

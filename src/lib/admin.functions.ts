@@ -614,8 +614,17 @@ export const adminListPages = createServerFn({ method: "GET" })
       context.supabase.from("page_categories").select("id,name"),
     ]);
     if (error) throw error;
-    const map = new Map((cats ?? []).map((c: { id: string; name: string }) => [c.id, c.name]));
-    return (data ?? []).map((p: { category_id: string | null }) => ({
+    const rows = (data ?? []) as {
+      id: string;
+      slug: string;
+      title: string;
+      category_id: string | null;
+      published: boolean;
+      sort_order: number;
+      updated_at: string;
+    }[];
+    const map = new Map(((cats ?? []) as { id: string; name: string }[]).map((c) => [c.id, c.name]));
+    return rows.map((p) => ({
       ...p,
       category_name: p.category_id ? (map.get(p.category_id) ?? null) : null,
     }));
