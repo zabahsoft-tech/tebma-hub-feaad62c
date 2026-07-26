@@ -24,6 +24,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as StylesSlugRouteImport } from './routes/styles.$slug'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as DictionarySlugRouteImport } from './routes/dictionary.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -138,6 +139,11 @@ const StylesSlugRoute = StylesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => StylesRoute,
+} as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NewsSlugRoute = NewsSlugRouteImport.update({
   id: '/$slug',
@@ -388,6 +394,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/p/$slug': typeof PSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
@@ -443,6 +450,7 @@ export interface FileRoutesByTo {
   '/verify': typeof VerifyRouteWithChildren
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/p/$slug': typeof PSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
@@ -493,6 +501,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/p/$slug': typeof PSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
@@ -551,6 +560,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dictionary/$slug'
     | '/news/$slug'
+    | '/p/$slug'
     | '/styles/$slug'
     | '/verify/$code'
     | '/admin/categories'
@@ -606,6 +616,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/dictionary/$slug'
     | '/news/$slug'
+    | '/p/$slug'
     | '/styles/$slug'
     | '/verify/$code'
     | '/admin/contact'
@@ -655,6 +666,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/dictionary/$slug'
     | '/news/$slug'
+    | '/p/$slug'
     | '/styles/$slug'
     | '/verify/$code'
     | '/_authenticated/admin/categories'
@@ -710,6 +722,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StylesRoute: typeof StylesRouteWithChildren
   VerifyRoute: typeof VerifyRouteWithChildren
+  PSlugRoute: typeof PSlugRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
@@ -819,6 +832,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/styles/$slug'
       preLoaderRoute: typeof StylesSlugRouteImport
       parentRoute: typeof StylesRoute
+    }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/news/$slug': {
       id: '/news/$slug'
@@ -1357,6 +1377,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StylesRoute: StylesRouteWithChildren,
   VerifyRoute: VerifyRouteWithChildren,
+  PSlugRoute: PSlugRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
