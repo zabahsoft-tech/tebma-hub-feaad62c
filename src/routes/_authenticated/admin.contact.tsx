@@ -57,6 +57,10 @@ function ContactInfoPage() {
     >
       <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-6 max-w-3xl">
         <section className="space-y-4">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Brand</h2>
+          <ImageUpload name="logo_url" label="Federation logo" folder="branding" defaultValue={(data as { logo_url?: string | null } | null)?.logo_url ?? ""} />
+        </section>
+        <section className="space-y-4">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Offices</h2>
           <TextArea label="Headquarters address" name="hq_address" rows={2} defaultValue={data?.hq_address ?? ""} />
           <TextArea label="Asia office" name="asia_office" rows={2} defaultValue={data?.asia_office ?? ""} />
