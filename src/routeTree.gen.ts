@@ -9,38 +9,198 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StylesRouteImport } from './routes/styles'
+import { Route as RulesRouteImport } from './routes/rules'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as DictionaryRouteImport } from './routes/dictionary'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StylesSlugRouteImport } from './routes/styles.$slug'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as DictionarySlugRouteImport } from './routes/dictionary.$slug'
 
+const StylesRoute = StylesRouteImport.update({
+  id: '/styles',
+  path: '/styles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DictionaryRoute = DictionaryRouteImport.update({
+  id: '/dictionary',
+  path: '/dictionary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StylesSlugRoute = StylesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => StylesRoute,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NewsRoute,
+} as any)
+const DictionarySlugRoute = DictionarySlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => DictionaryRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/dictionary': typeof DictionaryRouteWithChildren
+  '/gallery': typeof GalleryRoute
+  '/news': typeof NewsRouteWithChildren
+  '/rules': typeof RulesRoute
+  '/styles': typeof StylesRouteWithChildren
+  '/dictionary/$slug': typeof DictionarySlugRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/styles/$slug': typeof StylesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/dictionary': typeof DictionaryRouteWithChildren
+  '/gallery': typeof GalleryRoute
+  '/news': typeof NewsRouteWithChildren
+  '/rules': typeof RulesRoute
+  '/styles': typeof StylesRouteWithChildren
+  '/dictionary/$slug': typeof DictionarySlugRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/styles/$slug': typeof StylesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/dictionary': typeof DictionaryRouteWithChildren
+  '/gallery': typeof GalleryRoute
+  '/news': typeof NewsRouteWithChildren
+  '/rules': typeof RulesRoute
+  '/styles': typeof StylesRouteWithChildren
+  '/dictionary/$slug': typeof DictionarySlugRoute
+  '/news/$slug': typeof NewsSlugRoute
+  '/styles/$slug': typeof StylesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/dictionary'
+    | '/gallery'
+    | '/news'
+    | '/rules'
+    | '/styles'
+    | '/dictionary/$slug'
+    | '/news/$slug'
+    | '/styles/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/dictionary'
+    | '/gallery'
+    | '/news'
+    | '/rules'
+    | '/styles'
+    | '/dictionary/$slug'
+    | '/news/$slug'
+    | '/styles/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/dictionary'
+    | '/gallery'
+    | '/news'
+    | '/rules'
+    | '/styles'
+    | '/dictionary/$slug'
+    | '/news/$slug'
+    | '/styles/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  DictionaryRoute: typeof DictionaryRouteWithChildren
+  GalleryRoute: typeof GalleryRoute
+  NewsRoute: typeof NewsRouteWithChildren
+  RulesRoute: typeof RulesRoute
+  StylesRoute: typeof StylesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/styles': {
+      id: '/styles'
+      path: '/styles'
+      fullPath: '/styles'
+      preLoaderRoute: typeof StylesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dictionary': {
+      id: '/dictionary'
+      path: '/dictionary'
+      fullPath: '/dictionary'
+      preLoaderRoute: typeof DictionaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +208,71 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/styles/$slug': {
+      id: '/styles/$slug'
+      path: '/$slug'
+      fullPath: '/styles/$slug'
+      preLoaderRoute: typeof StylesSlugRouteImport
+      parentRoute: typeof StylesRoute
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof NewsRoute
+    }
+    '/dictionary/$slug': {
+      id: '/dictionary/$slug'
+      path: '/$slug'
+      fullPath: '/dictionary/$slug'
+      preLoaderRoute: typeof DictionarySlugRouteImport
+      parentRoute: typeof DictionaryRoute
+    }
   }
 }
 
+interface DictionaryRouteChildren {
+  DictionarySlugRoute: typeof DictionarySlugRoute
+}
+
+const DictionaryRouteChildren: DictionaryRouteChildren = {
+  DictionarySlugRoute: DictionarySlugRoute,
+}
+
+const DictionaryRouteWithChildren = DictionaryRoute._addFileChildren(
+  DictionaryRouteChildren,
+)
+
+interface NewsRouteChildren {
+  NewsSlugRoute: typeof NewsSlugRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsSlugRoute: NewsSlugRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
+interface StylesRouteChildren {
+  StylesSlugRoute: typeof StylesSlugRoute
+}
+
+const StylesRouteChildren: StylesRouteChildren = {
+  StylesSlugRoute: StylesSlugRoute,
+}
+
+const StylesRouteWithChildren =
+  StylesRoute._addFileChildren(StylesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  DictionaryRoute: DictionaryRouteWithChildren,
+  GalleryRoute: GalleryRoute,
+  NewsRoute: NewsRouteWithChildren,
+  RulesRoute: RulesRoute,
+  StylesRoute: StylesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
