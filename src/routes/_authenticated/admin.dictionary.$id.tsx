@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminGetDictionary, adminUpsertDictionary } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -48,7 +49,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-3xl">
           <TextField label="Term" name="term" required defaultValue={data.term} />
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
-          <TextField label="Image URL" name="image_url" type="url" defaultValue={data.image_url} />
+          <ImageUpload name="image_url" label="Image" defaultValue={data.image_url} folder="dictionary" />
           <TextField label="Tags (comma separated)" name="tags" defaultValue={(data.tags ?? []).join(", ")} />
           <TextArea label="Description" name="description" rows={10} defaultValue={data.description} />
           <SaveBar pending={pending} cancelTo="/admin/dictionary" />

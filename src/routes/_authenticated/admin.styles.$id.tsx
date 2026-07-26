@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminGetStyle, adminUpsertStyle } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -49,7 +50,7 @@ export const Route = createFileRoute("/_authenticated/admin/styles/$id")({
           <TextField label="Name" name="name" required defaultValue={data.name} />
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
           <TextField label="Tagline" name="tagline" defaultValue={data.tagline} />
-          <TextField label="Cover URL" name="cover_url" type="url" defaultValue={data.cover_url} />
+          <ImageUpload name="cover_url" defaultValue={data.cover_url} folder="styles" />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={data.sort_order} />
           <TextArea label="Description" name="description" rows={12} defaultValue={data.description} />
           <SaveBar pending={pending} cancelTo="/admin/styles" />
