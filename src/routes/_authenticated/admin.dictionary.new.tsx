@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
-import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { RichEditor } from "@/components/admin/RichEditor";
 import { adminUpsertDictionary } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
