@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminListPhotos, adminUpsertPhoto } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/_authenticated/admin/gallery/$id")({
     return (
       <AdminPage title="Edit photo">
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-2xl">
-          <TextField label="Image URL" name="url" type="url" required defaultValue={row.url} />
+          <ImageUpload name="url" label="Photo" defaultValue={row.url} folder="gallery" />
           <TextField label="Caption" name="caption" defaultValue={row.caption} />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={row.sort_order} />
           <SaveBar pending={pending} cancelTo="/admin/gallery" />

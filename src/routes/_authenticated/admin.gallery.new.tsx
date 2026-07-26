@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminUpsertPhoto } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/admin/gallery/new")({
     return (
       <AdminPage title="Add photo">
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-2xl">
-          <TextField label="Image URL" name="url" type="url" required />
+          <ImageUpload name="url" label="Photo" folder="gallery" />
           <TextField label="Caption" name="caption" />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={0} />
           <SaveBar pending={pending} cancelTo="/admin/gallery" />

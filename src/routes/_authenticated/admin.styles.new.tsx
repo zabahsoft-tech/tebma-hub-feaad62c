@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminUpsertStyle } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/_authenticated/admin/styles/new")({
           <TextField label="Name" name="name" required />
           <TextField label="Slug" name="slug" required />
           <TextField label="Tagline" name="tagline" />
-          <TextField label="Cover URL" name="cover_url" type="url" />
+          <ImageUpload name="cover_url" folder="styles" />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={0} />
           <TextArea label="Description" name="description" rows={12} />
           <SaveBar pending={pending} cancelTo="/admin/styles" />
