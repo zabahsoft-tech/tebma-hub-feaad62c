@@ -14,9 +14,22 @@ export const Route = createFileRoute("/gallery")({
       { name: "description", content: "Photographs from World TEBMA Federation events, championships, seminars, and member schools." },
       { property: "og:title", content: "Gallery — World TEBMA Federation" },
       { property: "og:description", content: "Photographs from federation events and seminars." },
-      { property: "og:url", content: "/gallery" },
+      { property: "og:url", content: "https://tebma-hub.lovable.app/gallery" },
     ],
-    links: [{ rel: "canonical", href: "/gallery" }],
+    links: [{ rel: "canonical", href: "https://tebma-hub.lovable.app/gallery" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "World TEBMA Federation Photo Gallery",
+          description: "A collection of photographs from federation championships, seminars, and member schools.",
+          url: "https://tebma-hub.lovable.app/gallery",
+          about: "Traditional martial arts events and training",
+        }),
+      },
+    ],
   }),
   component: GalleryPage,
 });
@@ -37,6 +50,7 @@ function GalleryPage() {
                 key={p.id}
                 type="button"
                 onClick={() => setLightbox(p.url)}
+                aria-label={p.caption ? `View full-size photo: ${p.caption}` : "View full-size photo"}
                 className="group relative aspect-square bg-muted rounded-md overflow-hidden ring-1 ring-black/5"
               >
                 <img src={p.url} alt={p.caption ?? ""} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />

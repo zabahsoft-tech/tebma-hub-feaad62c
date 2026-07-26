@@ -10,15 +10,27 @@ export const Route = createFileRoute("/dictionary/$slug")({
   loader: async ({ context, params }) => {
     const row = await context.queryClient.ensureQueryData(qo(params.slug));
     if (!row) throw notFound();
+    return row;
   },
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} — TEBMA Photo Dictionary` },
-      { name: "description", content: "Technique entry from the World TEBMA Photo Dictionary." },
-      { property: "og:url", content: `/dictionary/${params.slug}` },
-    ],
-    links: [{ rel: "canonical", href: `/dictionary/${params.slug}` }],
-  }),
+  head: ({ params, loaderData }) => {
+    if (!loaderData) return { meta: [{ title: "Entry not found" }, { name: "robots", content: "noindex" }] };
+    const url = `https://tebma-hub.lovable.app/dictionary/${params.slug}`;
+    const desc =
+      loaderData.description && loaderData.description.length >= 50
+        ? loaderData.description.slice(0, 160)
+        : `${loaderData.term} — a technique entry in the World TEBMA Photo Dictionary of federation-standard martial arts techniques.`;
+    return {
+      meta: [
+        { title: `${loaderData.term} — TEBMA Photo Dictionary` },
+        { name: "description", content: desc },
+        { property: "og:title", content: `${loaderData.term} — TEBMA Photo Dictionary` },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        ...(loaderData.image_url ? [{ property: "og:image", content: loaderData.image_url }, { name: "twitter:image", content: loaderData.image_url }] : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: DictDetail,
 });
 

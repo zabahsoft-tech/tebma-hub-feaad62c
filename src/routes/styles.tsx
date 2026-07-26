@@ -31,7 +31,9 @@ function StylesIndex() {
             <h2 className="text-2xl font-medium tracking-tight">{st.name}</h2>
             {st.tagline ? <p className="mt-2 text-sm text-muted-foreground">{st.tagline}</p> : null}
             <p className="mt-4 text-sm text-muted-foreground line-clamp-4">{st.description}</p>
-            <span className="mt-6 inline-block text-xs font-medium uppercase tracking-widest border-b border-foreground pb-0.5">Learn more</span>
+            <span className="mt-6 inline-block text-xs font-medium uppercase tracking-widest border-b border-foreground pb-0.5">
+              View {st.name} details
+            </span>
           </Link>
         ))}
       </section>

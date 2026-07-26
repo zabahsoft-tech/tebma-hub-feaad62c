@@ -10,15 +10,26 @@ export const Route = createFileRoute("/styles/$slug")({
   loader: async ({ context, params }) => {
     const row = await context.queryClient.ensureQueryData(qo(params.slug));
     if (!row) throw notFound();
+    return row;
   },
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} — TEBMA Discipline` },
-      { name: "description", content: `Technical overview of ${params.slug} in the World TEBMA Federation.` },
-      { property: "og:url", content: `/styles/${params.slug}` },
-    ],
-    links: [{ rel: "canonical", href: `/styles/${params.slug}` }],
-  }),
+  head: ({ params, loaderData }) => {
+    if (!loaderData) return { meta: [{ title: "Discipline not found" }, { name: "robots", content: "noindex" }] };
+    const url = `https://tebma-hub.lovable.app/styles/${params.slug}`;
+    const desc =
+      loaderData.tagline ??
+      `Technical overview of ${loaderData.name}, a discipline governed by the World TEBMA Martial Arts Federation.`;
+    return {
+      meta: [
+        { title: `${loaderData.name} — TEBMA Discipline` },
+        { name: "description", content: desc.slice(0, 160) },
+        { property: "og:title", content: `${loaderData.name} — TEBMA Discipline` },
+        { property: "og:description", content: desc.slice(0, 160) },
+        { property: "og:url", content: url },
+        ...(loaderData.cover_url ? [{ property: "og:image", content: loaderData.cover_url }, { name: "twitter:image", content: loaderData.cover_url }] : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: StyleDetail,
 });
 
