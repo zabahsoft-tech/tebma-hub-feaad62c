@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminGetContactInfo, adminUpsertContactInfo } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -37,6 +38,7 @@ function ContactInfoPage() {
           instagram: get("instagram"),
           youtube: get("youtube"),
           twitter: get("twitter"),
+          logo_url: get("logo_url"),
         },
       });
       toast.success("Contact info updated");
@@ -54,6 +56,10 @@ function ContactInfoPage() {
       description="Edit the addresses, emails, and social handles shown on the public Contact page."
     >
       <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-6 max-w-3xl">
+        <section className="space-y-4">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Brand</h2>
+          <ImageUpload name="logo_url" label="Federation logo" folder="branding" defaultValue={(data as { logo_url?: string | null } | null)?.logo_url ?? ""} />
+        </section>
         <section className="space-y-4">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Offices</h2>
           <TextArea label="Headquarters address" name="hq_address" rows={2} defaultValue={data?.hq_address ?? ""} />

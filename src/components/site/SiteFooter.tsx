@@ -1,14 +1,27 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { SITE_SHORT } from "@/lib/site";
+import { getContactInfo } from "@/lib/public.functions";
 
 export function SiteFooter() {
+  const { data } = useQuery({
+    queryKey: ["site", "contact-info"],
+    queryFn: () => getContactInfo(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const logoUrl = (data as { logo_url?: string | null } | null)?.logo_url ?? null;
+
   return (
     <footer className="py-20 border-t border-border/60 mt-24">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between gap-12">
           <div className="flex flex-col gap-6 max-w-sm">
             <div className="flex items-center gap-2">
-              <div className="size-6 bg-foreground rounded-xs" />
+              {logoUrl ? (
+                <img src={logoUrl} alt={`${SITE_SHORT} logo`} className="h-6 w-auto object-contain" />
+              ) : (
+                <div className="size-6 bg-foreground rounded-xs" />
+              )}
               <span className="text-xs font-semibold uppercase tracking-widest">{SITE_SHORT}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
