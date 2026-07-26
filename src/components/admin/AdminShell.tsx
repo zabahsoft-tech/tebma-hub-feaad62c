@@ -12,6 +12,7 @@ import {
   Mail,
   UserPlus,
   LayoutDashboard,
+  MapPin,
   ExternalLink,
 } from "lucide-react";
 import {
@@ -51,6 +52,7 @@ const OPS_NAV: NavItem[] = [
   { to: "/admin/certificates", label: "Certificates", icon: Award },
   { to: "/admin/memberships", label: "Applications", icon: UserPlus },
   { to: "/admin/messages", label: "Messages", icon: Mail },
+  { to: "/admin/contact", label: "Contact info", icon: MapPin },
 ];
 
 const ALL_NAV = [...CONTENT_NAV, ...OPS_NAV];

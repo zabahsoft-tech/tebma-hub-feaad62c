@@ -329,6 +329,57 @@ export type Database = {
         }
         Relationships: []
       }
+      site_contact_info: {
+        Row: {
+          americas_office: string | null
+          asia_office: string | null
+          created_at: string
+          facebook: string | null
+          general_email: string | null
+          hq_address: string | null
+          id: string
+          instagram: string | null
+          media_email: string | null
+          phone: string | null
+          twitter: string | null
+          updated_at: string
+          website: string | null
+          youtube: string | null
+        }
+        Insert: {
+          americas_office?: string | null
+          asia_office?: string | null
+          created_at?: string
+          facebook?: string | null
+          general_email?: string | null
+          hq_address?: string | null
+          id?: string
+          instagram?: string | null
+          media_email?: string | null
+          phone?: string | null
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+          youtube?: string | null
+        }
+        Update: {
+          americas_office?: string | null
+          asia_office?: string | null
+          created_at?: string
+          facebook?: string | null
+          general_email?: string | null
+          hq_address?: string | null
+          id?: string
+          instagram?: string | null
+          media_email?: string | null
+          phone?: string | null
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+          youtube?: string | null
+        }
+        Relationships: []
+      }
       styles: {
         Row: {
           cover_url: string | null
