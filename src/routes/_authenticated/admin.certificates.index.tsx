@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 
 const qo = queryOptions({ queryKey: ["admin", "certs"], queryFn: () => adminListCerts() });
 
-export const Route = createFileRoute("/_authenticated/admin/certificates")({
+export const Route = createFileRoute("/_authenticated/admin/certificates/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
   component: () => {
     const { data } = useSuspenseQuery(qo);

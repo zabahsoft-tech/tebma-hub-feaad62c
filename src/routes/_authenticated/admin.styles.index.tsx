@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 
 const qo = queryOptions({ queryKey: ["admin", "styles"], queryFn: () => adminListStyles() });
 
-export const Route = createFileRoute("/_authenticated/admin/styles")({
+export const Route = createFileRoute("/_authenticated/admin/styles/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
   component: () => {
     const { data } = useSuspenseQuery(qo);

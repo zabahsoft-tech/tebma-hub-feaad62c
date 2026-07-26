@@ -8,7 +8,7 @@ import { Plus } from "lucide-react";
 
 const qo = queryOptions({ queryKey: ["admin", "news"], queryFn: () => adminListNews() });
 
-export const Route = createFileRoute("/_authenticated/admin/news")({
+export const Route = createFileRoute("/_authenticated/admin/news/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
   component: NewsAdmin,
 });
