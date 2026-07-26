@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_authenticated/admin/rules/new")({
           <TextField label="Title" name="title" required />
           <TextField label="Slug" name="slug" required />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={0} />
-          <TextArea label="Body" name="body" rows={16} />
+          <RichEditor name="body" folder="rules" placeholder="Write the rules section. Use headings, lists, and links." />
           <SaveBar pending={pending} cancelTo="/admin/rules" />
         </form>
       </AdminPage>
