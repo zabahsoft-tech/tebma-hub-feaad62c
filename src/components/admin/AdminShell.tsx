@@ -13,6 +13,8 @@ import {
   UserPlus,
   LayoutDashboard,
   MapPin,
+  FileText,
+  FolderTree,
   ExternalLink,
 } from "lucide-react";
 import {
@@ -47,6 +49,8 @@ const CONTENT_NAV: NavItem[] = [
   { to: "/admin/rules", label: "Rules", icon: Scroll },
   { to: "/admin/dictionary", label: "Dictionary", icon: Book },
   { to: "/admin/gallery", label: "Gallery", icon: ImageIcon },
+  { to: "/admin/pages", label: "Pages", icon: FileText },
+  { to: "/admin/categories", label: "Categories", icon: FolderTree },
 ];
 
 const OPS_NAV: NavItem[] = [
