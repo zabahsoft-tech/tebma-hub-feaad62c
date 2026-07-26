@@ -65,6 +65,10 @@ function currentTitle(pathname: string): string {
 }
 
 function NavGroup({ label, items, pathname }: { label: string; items: NavItem[]; pathname: string }) {
+  const { isMobile, setOpenMobile } = useSidebar();
+  const closeOnMobile = () => {
+    if (isMobile) setOpenMobile(false);
+  };
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
