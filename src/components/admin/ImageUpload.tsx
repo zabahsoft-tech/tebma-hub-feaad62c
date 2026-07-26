@@ -70,14 +70,8 @@ export function ImageUpload({
               </button>
             ) : null}
           </div>
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="or paste an image URL"
-            className="w-full text-sm border border-border rounded-sm px-3 py-1.5 bg-background focus:outline-none focus:ring-1 focus:ring-foreground"
-          />
           <p className="text-[11px] text-muted-foreground">PNG, JPG, WEBP, AVIF up to 10MB. Used for cards, sharing previews, and OpenGraph.</p>
+
         </div>
       </div>
       <input type="hidden" name={name} value={url} />
