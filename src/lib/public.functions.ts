@@ -178,3 +178,75 @@ export const getContactInfo = createServerFn({ method: "GET" }).handler(async ()
   return data;
 });
 
+// ============ PAGES & CATEGORIES ============
+export const listNavCategories = createServerFn({ method: "GET" }).handler(async () => {
+  const s = createServerPublicClient();
+  const [{ data: cats, error: catErr }, { data: pages, error: pageErr }] = await Promise.all([
+    s
+      .from("page_categories")
+      .select("id,slug,name,sort_order,visible_in_nav")
+      .eq("visible_in_nav", true)
+      .order("sort_order")
+      .order("name"),
+    s
+      .from("pages")
+      .select("id,slug,title,category_id,sort_order")
+      .eq("published", true)
+      .order("sort_order")
+      .order("title"),
+  ]);
+  if (catErr) throw catErr;
+  if (pageErr) throw pageErr;
+  return (cats ?? []).map((c) => ({
+    ...c,
+    pages: (pages ?? []).filter((p) => p.category_id === c.id),
+  }));
+});
+
+export const getPageBySlug = createServerFn({ method: "GET" })
+  .inputValidator((d: { slug: string }) => d)
+  .handler(async ({ data }) => {
+    const s = createServerPublicClient();
+    const { data: row, error } = await s
+      .from("pages")
+      .select("id,slug,title,excerpt,body,cover_url,seo_title,seo_description,published_at,updated_at,category_id")
+      .eq("slug", data.slug)
+      .eq("published", true)
+      .maybeSingle();
+    if (error) throw error;
+    if (!row) return null;
+    let category: { slug: string; name: string } | null = null;
+    if (row.category_id) {
+      const { data: cat } = await s
+        .from("page_categories")
+        .select("slug,name")
+        .eq("id", row.category_id)
+        .maybeSingle();
+      category = cat ?? null;
+    }
+    return { ...row, category };
+  });
+
+export const getCategoryBySlug = createServerFn({ method: "GET" })
+  .inputValidator((d: { slug: string }) => d)
+  .handler(async ({ data }) => {
+    const s = createServerPublicClient();
+    const { data: cat, error } = await s
+      .from("page_categories")
+      .select("id,slug,name")
+      .eq("slug", data.slug)
+      .maybeSingle();
+    if (error) throw error;
+    if (!cat) return null;
+    const { data: pages, error: pageErr } = await s
+      .from("pages")
+      .select("id,slug,title,excerpt,cover_url,sort_order")
+      .eq("category_id", cat.id)
+      .eq("published", true)
+      .order("sort_order")
+      .order("title");
+    if (pageErr) throw pageErr;
+    return { ...cat, pages: pages ?? [] };
+  });
+
+
