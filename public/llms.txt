@@ -1,0 +1,18 @@
+# World TEBMA Martial Arts Federation
+
+> The global governing body for traditional TEBMA martial arts — overseeing certification, competition, and technical standards across 140 member nations.
+
+The federation preserves the technical integrity and philosophical foundations of TEBMA disciplines. It publishes official news, maintains a photo dictionary of standardized techniques, governs discipline curricula, issues verifiable practitioner certificates, and manages membership for schools and individuals worldwide.
+
+## Pages
+
+- [Home](/): Federation overview, latest news, and certificate verification.
+- [News & Bulletins](/news): Official announcements, technical updates, and championship dispatches.
+- [Disciplines & Styles](/styles): Formal martial arts disciplines governed by the federation.
+- [Rules & Bylaws](/rules): Competition rules, ranking standards, and federation bylaws.
+- [Photo Dictionary](/dictionary): Visual glossary of federation-standard techniques, stances, and etiquette.
+- [Gallery](/gallery): Photographs from championships, seminars, and member schools.
+- [Membership](/membership): Membership tiers and application information.
+- [Certificate Verification](/verify): Verify the authenticity of a TEBMA-issued certificate by code or QR.
+- [About](/about): History, mission, and governance of the federation.
+- [Contact](/contact): Contact the federation secretariat.

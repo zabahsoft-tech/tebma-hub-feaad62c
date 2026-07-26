@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "The World TEBMA Federation is the global governing body for traditional TEBMA martial arts, overseeing certification, competition, and standards across member nations.",
+          "Global governing body for traditional TEBMA martial arts. Certification, competition, and standards across 140 member nations.",
       },
       { name: "author", content: "World TEBMA Federation" },
       { property: "og:site_name", content: "World TEBMA Federation" },
@@ -96,6 +96,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "World TEBMA Martial Arts Federation",
+              url: "https://tebma-hub.lovable.app",
+              description:
+                "The global governing body for traditional TEBMA martial arts, overseeing certification, competition, and standards across 140 member nations.",
+              foundingDate: "1974",
+            },
+            {
+              "@type": "WebSite",
+              name: "World TEBMA Martial Arts Federation",
+              url: "https://tebma-hub.lovable.app",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://tebma-hub.lovable.app/dictionary?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            },
+          ],
+        }),
       },
     ],
   }),

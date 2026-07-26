@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /auth
+
+Sitemap: https://tebma-hub.lovable.app/sitemap.xml
