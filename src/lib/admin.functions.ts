@@ -401,3 +401,48 @@ export const adminListContact = createServerFn({ method: "GET" })
     if (error) throw error;
     return data ?? [];
   });
+
+// ---------- Dashboard stats ----------
+export const adminDashboardStats = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await ensureAdmin(context);
+    const s = context.supabase;
+    const [
+      publishedNews,
+      totalNews,
+      styles,
+      dictionary,
+      certificates,
+      pendingApps,
+      totalApps,
+      messages,
+      recentApps,
+      recentMessages,
+    ] = await Promise.all([
+      s.from("news_articles").select("id", { count: "exact", head: true }).eq("published", true),
+      s.from("news_articles").select("id", { count: "exact", head: true }),
+      s.from("styles").select("id", { count: "exact", head: true }),
+      s.from("dictionary_entries").select("id", { count: "exact", head: true }),
+      s.from("certificates").select("id", { count: "exact", head: true }),
+      s.from("membership_applications").select("id", { count: "exact", head: true }).eq("status", "pending"),
+      s.from("membership_applications").select("id", { count: "exact", head: true }),
+      s.from("contact_messages").select("id", { count: "exact", head: true }),
+      s.from("membership_applications").select("id,full_name,email,tier,status,created_at").order("created_at", { ascending: false }).limit(5),
+      s.from("contact_messages").select("id,name,email,subject,created_at").order("created_at", { ascending: false }).limit(5),
+    ]);
+    return {
+      counts: {
+        publishedNews: publishedNews.count ?? 0,
+        totalNews: totalNews.count ?? 0,
+        styles: styles.count ?? 0,
+        dictionary: dictionary.count ?? 0,
+        certificates: certificates.count ?? 0,
+        pendingApps: pendingApps.count ?? 0,
+        totalApps: totalApps.count ?? 0,
+        messages: messages.count ?? 0,
+      },
+      recentApps: recentApps.data ?? [],
+      recentMessages: recentMessages.data ?? [],
+    };
+  });
