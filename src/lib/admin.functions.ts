@@ -2,7 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
-async function ensureAdmin(context: { supabase: ReturnType<typeof requireSupabaseAuth> extends never ? never : any; userId: string }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function ensureAdmin(context: any) {
   const { data, error } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
   if (error) throw error;
   if (!data) throw new Error("Forbidden: admin only");
@@ -314,7 +315,7 @@ const certSchema = z.object({
   country: z.string().trim().max(100).optional().nullable(),
   issued_on: z.string(),
   expires_on: z.string().optional().nullable(),
-  status: z.enum(["valid", "revoked", "expired"]).default("valid"),
+  status: z.enum(["active", "revoked", "expired"]).default("active"),
   notes: z.string().max(2000).optional().nullable(),
 });
 
