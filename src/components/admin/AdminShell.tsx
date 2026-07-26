@@ -81,7 +81,7 @@ function NavGroup({ label, items, pathname }: { label: string; items: NavItem[];
             return (
               <SidebarMenuItem key={item.to}>
                 <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
-                  <Link to={item.to}>
+                  <Link to={item.to} onClick={closeOnMobile}>
                     <Icon className="size-4" />
                     <span>{item.label}</span>
                   </Link>
