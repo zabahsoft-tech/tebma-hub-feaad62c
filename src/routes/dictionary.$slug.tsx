@@ -53,7 +53,7 @@ function DictDetail() {
           </div>
         ) : null}
         {data.image_url ? <img src={data.image_url} alt="" className="mt-8 w-full rounded-md ring-1 ring-black/5" /> : null}
-        <div className="mt-8 whitespace-pre-wrap text-[15px] leading-relaxed">{data.description}</div>
+        <div className="prose prose-neutral max-w-none mt-8 text-[15px] leading-relaxed" dangerouslySetInnerHTML={{ __html: data.description }} />
       </article>
     </PageShell>
   );

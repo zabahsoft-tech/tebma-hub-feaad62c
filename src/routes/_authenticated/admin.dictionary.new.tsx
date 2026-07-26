@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
-import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { RichEditor } from "@/components/admin/RichEditor";
 import { adminUpsertDictionary } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/new")({
           <TextField label="Slug" name="slug" required />
           <ImageUpload name="image_url" label="Image" folder="dictionary" />
           <TextField label="Tags (comma separated)" name="tags" placeholder="stance, defense, beginner" />
-          <TextArea label="Description" name="description" rows={10} />
+          <RichEditor name="description" folder="dictionary" placeholder="Describe the technique, stance, or term." />
           <SaveBar pending={pending} cancelTo="/admin/dictionary" />
         </form>
       </AdminPage>

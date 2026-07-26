@@ -2,8 +2,9 @@ import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
-import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { RichEditor } from "@/components/admin/RichEditor";
 import { adminGetDictionary, adminUpsertDictionary } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -51,7 +52,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
           <ImageUpload name="image_url" label="Image" defaultValue={data.image_url} folder="dictionary" />
           <TextField label="Tags (comma separated)" name="tags" defaultValue={(data.tags ?? []).join(", ")} />
-          <TextArea label="Description" name="description" rows={10} defaultValue={data.description} />
+          <RichEditor name="description" folder="dictionary" defaultValue={data.description} placeholder="Describe the technique, stance, or term." />
           <SaveBar pending={pending} cancelTo="/admin/dictionary" />
         </form>
       </AdminPage>
