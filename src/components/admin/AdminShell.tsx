@@ -36,7 +36,8 @@ export function AdminShell() {
         </div>
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
           {ADMIN_NAV.map((item) => {
-            const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
+            const exact = "exact" in item && item.exact;
+            const active = exact ? pathname === item.to : pathname.startsWith(item.to);
             const Icon = item.icon;
             return (
               <Link
