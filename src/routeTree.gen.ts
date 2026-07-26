@@ -53,6 +53,7 @@ import { Route as AuthenticatedAdminStylesIdRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminRulesNewRouteImport } from './routes/_authenticated/admin.rules.new'
 import { Route as AuthenticatedAdminRulesIdRouteImport } from './routes/_authenticated/admin.rules.$id'
 import { Route as AuthenticatedAdminPagesNewRouteImport } from './routes/_authenticated/admin.pages.new'
+import { Route as AuthenticatedAdminPagesIdRouteImport } from './routes/_authenticated/admin.pages.$id'
 import { Route as AuthenticatedAdminNewsNewRouteImport } from './routes/_authenticated/admin.news.new'
 import { Route as AuthenticatedAdminNewsIdRouteImport } from './routes/_authenticated/admin.news.$id'
 import { Route as AuthenticatedAdminGalleryNewRouteImport } from './routes/_authenticated/admin.gallery.new'
@@ -304,6 +305,12 @@ const AuthenticatedAdminPagesNewRoute =
     path: '/new',
     getParentRoute: () => AuthenticatedAdminPagesRoute,
   } as any)
+const AuthenticatedAdminPagesIdRoute =
+  AuthenticatedAdminPagesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminPagesRoute,
+  } as any)
 const AuthenticatedAdminNewsNewRoute =
   AuthenticatedAdminNewsNewRouteImport.update({
     id: '/new',
@@ -405,6 +412,7 @@ export interface FileRoutesByFullPath {
   '/admin/gallery/new': typeof AuthenticatedAdminGalleryNewRoute
   '/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
   '/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
+  '/admin/pages/$id': typeof AuthenticatedAdminPagesIdRoute
   '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
   '/admin/rules/$id': typeof AuthenticatedAdminRulesIdRoute
   '/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
@@ -451,6 +459,7 @@ export interface FileRoutesByTo {
   '/admin/gallery/new': typeof AuthenticatedAdminGalleryNewRoute
   '/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
   '/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
+  '/admin/pages/$id': typeof AuthenticatedAdminPagesIdRoute
   '/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
   '/admin/rules/$id': typeof AuthenticatedAdminRulesIdRoute
   '/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
@@ -508,6 +517,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/gallery/new': typeof AuthenticatedAdminGalleryNewRoute
   '/_authenticated/admin/news/$id': typeof AuthenticatedAdminNewsIdRoute
   '/_authenticated/admin/news/new': typeof AuthenticatedAdminNewsNewRoute
+  '/_authenticated/admin/pages/$id': typeof AuthenticatedAdminPagesIdRoute
   '/_authenticated/admin/pages/new': typeof AuthenticatedAdminPagesNewRoute
   '/_authenticated/admin/rules/$id': typeof AuthenticatedAdminRulesIdRoute
   '/_authenticated/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
@@ -565,6 +575,7 @@ export interface FileRouteTypes {
     | '/admin/gallery/new'
     | '/admin/news/$id'
     | '/admin/news/new'
+    | '/admin/pages/$id'
     | '/admin/pages/new'
     | '/admin/rules/$id'
     | '/admin/rules/new'
@@ -611,6 +622,7 @@ export interface FileRouteTypes {
     | '/admin/gallery/new'
     | '/admin/news/$id'
     | '/admin/news/new'
+    | '/admin/pages/$id'
     | '/admin/pages/new'
     | '/admin/rules/$id'
     | '/admin/rules/new'
@@ -667,6 +679,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/gallery/new'
     | '/_authenticated/admin/news/$id'
     | '/_authenticated/admin/news/new'
+    | '/_authenticated/admin/pages/$id'
     | '/_authenticated/admin/pages/new'
     | '/_authenticated/admin/rules/$id'
     | '/_authenticated/admin/rules/new'
@@ -1010,6 +1023,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPagesNewRouteImport
       parentRoute: typeof AuthenticatedAdminPagesRoute
     }
+    '/_authenticated/admin/pages/$id': {
+      id: '/_authenticated/admin/pages/$id'
+      path: '/$id'
+      fullPath: '/admin/pages/$id'
+      preLoaderRoute: typeof AuthenticatedAdminPagesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminPagesRoute
+    }
     '/_authenticated/admin/news/new': {
       id: '/_authenticated/admin/news/new'
       path: '/new'
@@ -1179,12 +1199,14 @@ const AuthenticatedAdminNewsRouteWithChildren =
   )
 
 interface AuthenticatedAdminPagesRouteChildren {
+  AuthenticatedAdminPagesIdRoute: typeof AuthenticatedAdminPagesIdRoute
   AuthenticatedAdminPagesNewRoute: typeof AuthenticatedAdminPagesNewRoute
   AuthenticatedAdminPagesIndexRoute: typeof AuthenticatedAdminPagesIndexRoute
 }
 
 const AuthenticatedAdminPagesRouteChildren: AuthenticatedAdminPagesRouteChildren =
   {
+    AuthenticatedAdminPagesIdRoute: AuthenticatedAdminPagesIdRoute,
     AuthenticatedAdminPagesNewRoute: AuthenticatedAdminPagesNewRoute,
     AuthenticatedAdminPagesIndexRoute: AuthenticatedAdminPagesIndexRoute,
   }
