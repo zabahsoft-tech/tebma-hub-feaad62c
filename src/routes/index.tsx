@@ -18,13 +18,17 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "The World TEBMA Federation preserves the technical integrity of traditional martial arts across 140 member nations. Verify certificates, explore disciplines, and follow federation news.",
+          "Global governing body for traditional TEBMA martial arts. Verify certificates, explore disciplines, and follow federation news across 140 nations.",
       },
       { property: "og:title", content: "World TEBMA Martial Arts Federation" },
-      { property: "og:description", content: "The Global Standard for Traditional Martial Arts." },
-      { property: "og:url", content: "/" },
+      {
+        property: "og:description",
+        content:
+          "The Global Standard for Traditional Martial Arts — certification, disciplines, and news from the World TEBMA Federation.",
+      },
+      { property: "og:url", content: "https://tebma-hub.lovable.app/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://tebma-hub.lovable.app/" }],
   }),
   component: HomePage,
 });

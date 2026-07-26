@@ -39,7 +39,13 @@ function DictionaryPage() {
       <PageHeader eyebrow="Glossary" title="Photo Dictionary" description="A visual glossary of federation-standard techniques, stances, and etiquette." />
       <section className="max-w-7xl mx-auto px-6 py-16">
         <div className="mb-10 max-w-xl">
+          <label htmlFor="dictionary-search" className="sr-only">
+            Search dictionary
+          </label>
           <input
+            id="dictionary-search"
+            type="search"
+            aria-label="Search dictionary"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search techniques, tags, or terms…"

@@ -10,17 +10,26 @@ export const Route = createFileRoute("/news/$slug")({
   loader: async ({ context, params }) => {
     const row = await context.queryClient.ensureQueryData(qo(params.slug));
     if (!row) throw notFound();
+    return row;
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Article not found" }, { name: "robots", content: "noindex" }] };
+    const url = `https://tebma-hub.lovable.app/news/${params.slug}`;
+    const desc =
+      loaderData.excerpt && loaderData.excerpt.length >= 50
+        ? loaderData.excerpt.slice(0, 160)
+        : `${loaderData.title} — an official dispatch from the World TEBMA Martial Arts Federation covering federation news and updates.`;
     return {
       meta: [
-        { title: `News — ${params.slug}` },
-        { name: "description", content: "Federation article" },
-        { property: "og:url", content: `/news/${params.slug}` },
+        { title: `${loaderData.title} — World TEBMA Federation` },
+        { name: "description", content: desc },
+        { property: "og:title", content: loaderData.title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
         { property: "og:type", content: "article" },
+        ...(loaderData.cover_url ? [{ property: "og:image", content: loaderData.cover_url }, { name: "twitter:image", content: loaderData.cover_url }] : []),
       ],
-      links: [{ rel: "canonical", href: `/news/${params.slug}` }],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: Article,
