@@ -30,6 +30,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminStylesRouteImport } from './routes/_authenticated/admin.styles'
 import { Route as AuthenticatedAdminRulesRouteImport } from './routes/_authenticated/admin.rules'
+import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
 import { Route as AuthenticatedAdminMembershipsRouteImport } from './routes/_authenticated/admin.memberships'
@@ -161,6 +162,11 @@ const AuthenticatedAdminStylesRoute =
 const AuthenticatedAdminRulesRoute = AuthenticatedAdminRulesRouteImport.update({
   id: '/rules',
   path: '/rules',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminPagesRoute = AuthenticatedAdminPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
 const AuthenticatedAdminNewsRoute = AuthenticatedAdminNewsRouteImport.update({
@@ -350,6 +356,7 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/news': typeof AuthenticatedAdminNewsRouteWithChildren
+  '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/rules': typeof AuthenticatedAdminRulesRouteWithChildren
   '/admin/styles': typeof AuthenticatedAdminStylesRouteWithChildren
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -394,6 +401,7 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
+  '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/certificates/$id': typeof AuthenticatedAdminCertificatesIdRoute
   '/admin/certificates/new': typeof AuthenticatedAdminCertificatesNewRoute
@@ -443,6 +451,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRouteWithChildren
+  '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/rules': typeof AuthenticatedAdminRulesRouteWithChildren
   '/_authenticated/admin/styles': typeof AuthenticatedAdminStylesRouteWithChildren
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -494,6 +503,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/messages'
     | '/admin/news'
+    | '/admin/pages'
     | '/admin/rules'
     | '/admin/styles'
     | '/admin/'
@@ -538,6 +548,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/memberships'
     | '/admin/messages'
+    | '/admin/pages'
     | '/admin'
     | '/admin/certificates/$id'
     | '/admin/certificates/new'
@@ -586,6 +597,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/memberships'
     | '/_authenticated/admin/messages'
     | '/_authenticated/admin/news'
+    | '/_authenticated/admin/pages'
     | '/_authenticated/admin/rules'
     | '/_authenticated/admin/styles'
     | '/_authenticated/admin/'
@@ -774,6 +786,13 @@ declare module '@tanstack/react-router' {
       path: '/rules'
       fullPath: '/admin/rules'
       preLoaderRoute: typeof AuthenticatedAdminRulesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/pages': {
+      id: '/_authenticated/admin/pages'
+      path: '/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AuthenticatedAdminPagesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/news': {
@@ -1089,6 +1108,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminMembershipsRoute: typeof AuthenticatedAdminMembershipsRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRouteWithChildren
+  AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminRulesRoute: typeof AuthenticatedAdminRulesRouteWithChildren
   AuthenticatedAdminStylesRoute: typeof AuthenticatedAdminStylesRouteWithChildren
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -1105,6 +1125,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminMembershipsRoute: AuthenticatedAdminMembershipsRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRouteWithChildren,
+  AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminRulesRoute: AuthenticatedAdminRulesRouteWithChildren,
   AuthenticatedAdminStylesRoute: AuthenticatedAdminStylesRouteWithChildren,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
