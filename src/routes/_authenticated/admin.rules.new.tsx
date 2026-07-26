@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
-import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
+import { TextField, SaveBar } from "@/components/admin/AdminForm";
+import { RichEditor } from "@/components/admin/RichEditor";
 import { adminUpsertRule } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/_authenticated/admin/rules/new")({
           <TextField label="Title" name="title" required />
           <TextField label="Slug" name="slug" required />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={0} />
-          <TextArea label="Body" name="body" rows={16} />
+          <RichEditor name="body" folder="rules" placeholder="Write the rules section. Use headings, lists, and links." />
           <SaveBar pending={pending} cancelTo="/admin/rules" />
         </form>
       </AdminPage>
