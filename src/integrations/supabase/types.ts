@@ -395,6 +395,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      verify_certificate_by_code: {
+        Args: { _code: string }
+        Returns: {
+          code: string
+          country: string
+          expires_on: string
+          holder_name: string
+          issued_on: string
+          rank: string
+          status: Database["public"]["Enums"]["certificate_status"]
+          style_name: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin"

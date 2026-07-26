@@ -111,12 +111,9 @@ export const verifyCertificate = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     if (!data.code) return { found: false as const };
     const s = createServerPublicClient();
-    const { data: row, error } = await s
-      .from("certificates")
-      .select("code,holder_name,rank,style_name,country,issued_on,expires_on,status")
-      .eq("code", data.code)
-      .maybeSingle();
+    const { data: rows, error } = await s.rpc("verify_certificate_by_code", { _code: data.code });
     if (error) throw error;
+    const row = Array.isArray(rows) ? rows[0] : rows;
     if (!row) return { found: false as const };
     return { found: true as const, certificate: row };
   });
