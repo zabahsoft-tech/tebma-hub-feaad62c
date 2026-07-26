@@ -446,3 +446,65 @@ export const adminDashboardStats = createServerFn({ method: "GET" })
       recentMessages: recentMessages.data ?? [],
     };
   });
+
+// ---------- Contact Info (singleton) ----------
+const contactInfoSchema = z.object({
+  hq_address: z.string().trim().max(500).optional().nullable(),
+  asia_office: z.string().trim().max(500).optional().nullable(),
+  americas_office: z.string().trim().max(500).optional().nullable(),
+  general_email: z.string().trim().max(320).optional().nullable(),
+  media_email: z.string().trim().max(320).optional().nullable(),
+  phone: z.string().trim().max(60).optional().nullable(),
+  website: z.string().trim().max(300).optional().nullable(),
+  facebook: z.string().trim().max(300).optional().nullable(),
+  instagram: z.string().trim().max(300).optional().nullable(),
+  youtube: z.string().trim().max(300).optional().nullable(),
+  twitter: z.string().trim().max(300).optional().nullable(),
+});
+
+export const adminGetContactInfo = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await ensureAdmin(context);
+    const { data, error } = await context.supabase
+      .from("site_contact_info")
+      .select("*")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  });
+
+export const adminUpsertContactInfo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => contactInfoSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    const payload = Object.fromEntries(
+      Object.entries(data).map(([k, v]) => [k, v ? v : null]),
+    );
+    const { data: existing, error: readErr } = await context.supabase
+      .from("site_contact_info")
+      .select("id")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (readErr) throw readErr;
+    if (existing?.id) {
+      const { error } = await context.supabase
+        .from("site_contact_info")
+        .update(payload)
+        .eq("id", existing.id);
+      if (error) throw error;
+      return { id: existing.id };
+    }
+    const { data: row, error } = await context.supabase
+      .from("site_contact_info")
+      .insert(payload)
+      .select("id")
+      .single();
+    if (error) throw error;
+    return { id: row.id };
+  });
+

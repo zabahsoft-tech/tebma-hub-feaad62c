@@ -1,10 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { PageShell, PageHeader } from "@/components/site/PageShell";
-import { submitContact } from "@/lib/public.functions";
+import { getContactInfo, submitContact } from "@/lib/public.functions";
 import { toast } from "sonner";
 
+const contactQO = queryOptions({ queryKey: ["public", "contact-info"], queryFn: () => getContactInfo() });
+
 export const Route = createFileRoute("/contact")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(contactQO),
   head: () => ({
     meta: [
       { title: "Contact — World TEBMA Federation" },
@@ -19,7 +23,9 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
+  const { data: info } = useSuspenseQuery(contactQO);
   const [pending, setPending] = useState(false);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setPending(true);
@@ -42,23 +48,51 @@ function ContactPage() {
       setPending(false);
     }
   }
+
+  const rows: Array<{ k: string; v: string; href?: string }> = [];
+  if (info?.hq_address) rows.push({ k: "Headquarters", v: info.hq_address });
+  if (info?.asia_office) rows.push({ k: "Asia office", v: info.asia_office });
+  if (info?.americas_office) rows.push({ k: "Americas office", v: info.americas_office });
+  if (info?.general_email) rows.push({ k: "General enquiries", v: info.general_email, href: `mailto:${info.general_email}` });
+  if (info?.media_email) rows.push({ k: "Media", v: info.media_email, href: `mailto:${info.media_email}` });
+  if (info?.phone) rows.push({ k: "Phone", v: info.phone, href: `tel:${info.phone.replace(/\s+/g, "")}` });
+  if (info?.website) rows.push({ k: "Website", v: info.website, href: info.website });
+
+  const socials: Array<{ label: string; href: string }> = [];
+  if (info?.facebook) socials.push({ label: "Facebook", href: info.facebook });
+  if (info?.instagram) socials.push({ label: "Instagram", href: info.instagram });
+  if (info?.youtube) socials.push({ label: "YouTube", href: info.youtube });
+  if (info?.twitter) socials.push({ label: "Twitter / X", href: info.twitter });
+
   return (
     <PageShell>
       <PageHeader eyebrow="Correspondence" title="Contact the Federation" description="Reach the federation headquarters for enquiries, media, or member support." />
       <section className="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-10">
         <div className="space-y-8">
-          {[
-            { k: "Headquarters", v: "12 Rue de l'Etuve, Brussels" },
-            { k: "Asia office", v: "3-1 Marunouchi, Tokyo" },
-            { k: "Americas office", v: "225 Broadway, New York" },
-            { k: "General enquiries", v: "office@tebma.org" },
-            { k: "Media", v: "media@tebma.org" },
-          ].map((r) => (
+          {rows.map((r) => (
             <div key={r.k} className="border-b border-border pb-4">
               <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{r.k}</div>
-              <div className="mt-1 text-lg">{r.v}</div>
+              <div className="mt-1 text-lg">
+                {r.href ? (
+                  <a href={r.href} className="hover:underline underline-offset-4">{r.v}</a>
+                ) : (
+                  r.v
+                )}
+              </div>
             </div>
           ))}
+          {socials.length > 0 && (
+            <div className="pt-2">
+              <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">Follow</div>
+              <ul className="flex flex-wrap gap-3">
+                {socials.map((s) => (
+                  <li key={s.label}>
+                    <a href={s.href} target="_blank" rel="noreferrer" className="inline-block border border-border rounded-sm px-3 py-1.5 text-sm hover:bg-muted">{s.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <form onSubmit={onSubmit} className="border border-border rounded-md p-6 space-y-4 h-fit">
           <h2 className="text-lg font-medium tracking-tight">Send a message</h2>
