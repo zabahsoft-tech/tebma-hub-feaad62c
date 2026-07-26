@@ -164,3 +164,17 @@ export const submitContact = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true as const };
   });
+
+// ============ CONTACT INFO ============
+export const getContactInfo = createServerFn({ method: "GET" }).handler(async () => {
+  const s = createServerPublicClient();
+  const { data, error } = await s
+    .from("site_contact_info")
+    .select("hq_address,asia_office,americas_office,general_email,media_email,phone,website,facebook,instagram,youtube,twitter")
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+});
+
