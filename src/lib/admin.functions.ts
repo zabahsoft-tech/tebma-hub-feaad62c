@@ -16,7 +16,7 @@ const newsSchema = z.object({
   title: z.string().trim().min(1).max(300),
   excerpt: z.string().trim().max(500).optional().nullable(),
   body: z.string().max(50000).default(""),
-  cover_url: z.string().url().optional().nullable(),
+  cover_url: z.string().trim().max(2000).optional().nullable().transform((v) => (v ? v : null)),
   published: z.boolean().default(false),
   published_at: z.string().datetime().optional().nullable(),
 });

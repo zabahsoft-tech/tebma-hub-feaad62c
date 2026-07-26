@@ -2,7 +2,9 @@ import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
-import { TextField, TextArea, CheckField, SaveBar } from "@/components/admin/AdminForm";
+import { TextField, CheckField, SaveBar } from "@/components/admin/AdminForm";
+import { RichEditor } from "@/components/admin/RichEditor";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminGetNews, adminUpsertNews } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -48,12 +50,12 @@ function EditNews() {
   }
   return (
     <AdminPage title="Edit article">
-      <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-3xl">
+      <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-6 max-w-4xl">
         <TextField label="Title" name="title" required defaultValue={data.title} />
-        <TextField label="Slug" name="slug" required defaultValue={data.slug} />
-        <TextField label="Cover image URL" name="cover_url" type="url" defaultValue={data.cover_url} />
-        <TextArea label="Excerpt" name="excerpt" rows={3} defaultValue={data.excerpt} />
-        <TextArea label="Body" name="body" rows={14} defaultValue={data.body} />
+        <TextField label="URL slug" name="slug" required defaultValue={data.slug} />
+        <ImageUpload name="cover_url" defaultValue={data.cover_url} folder="news" />
+        <TextField label="Excerpt (SEO description, 50–160 chars ideal)" name="excerpt" maxLength={300} defaultValue={data.excerpt} />
+        <RichEditor name="body" defaultValue={data.body} folder="news" />
         <CheckField label="Published" name="published" defaultChecked={data.published} />
         <SaveBar pending={pending} cancelTo="/admin/news" />
       </form>
