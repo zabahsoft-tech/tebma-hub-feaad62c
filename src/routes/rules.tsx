@@ -40,7 +40,7 @@ function RulesPage() {
           {data.map((r) => (
             <section key={r.id} id={r.slug} className="scroll-mt-24">
               <h2 className="text-2xl font-medium tracking-tight mb-4">{r.title}</h2>
-              <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-muted-foreground">{r.body}</div>
+              <div className="prose prose-neutral max-w-none text-[15px] leading-relaxed" dangerouslySetInnerHTML={{ __html: r.body }} />
             </section>
           ))}
         </div>
