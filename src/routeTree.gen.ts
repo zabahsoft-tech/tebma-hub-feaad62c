@@ -37,6 +37,7 @@ import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminDictionaryRouteImport } from './routes/_authenticated/admin.dictionary'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminCertificatesRouteImport } from './routes/_authenticated/admin.certificates'
+import { Route as AuthenticatedAdminCategoriesRouteImport } from './routes/_authenticated/admin.categories'
 import { Route as AuthenticatedAdminStylesIndexRouteImport } from './routes/_authenticated/admin.styles.index'
 import { Route as AuthenticatedAdminRulesIndexRouteImport } from './routes/_authenticated/admin.rules.index'
 import { Route as AuthenticatedAdminNewsIndexRouteImport } from './routes/_authenticated/admin.news.index'
@@ -203,6 +204,12 @@ const AuthenticatedAdminCertificatesRoute =
     path: '/certificates',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminCategoriesRoute =
+  AuthenticatedAdminCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminStylesIndexRoute =
   AuthenticatedAdminStylesIndexRouteImport.update({
     id: '/',
@@ -335,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/dictionary': typeof AuthenticatedAdminDictionaryRouteWithChildren
@@ -382,6 +390,7 @@ export interface FileRoutesByTo {
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
@@ -426,6 +435,7 @@ export interface FileRoutesById {
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/dictionary': typeof AuthenticatedAdminDictionaryRouteWithChildren
@@ -476,6 +486,7 @@ export interface FileRouteTypes {
     | '/news/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/admin/categories'
     | '/admin/certificates'
     | '/admin/contact'
     | '/admin/dictionary'
@@ -523,6 +534,7 @@ export interface FileRouteTypes {
     | '/news/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/admin/categories'
     | '/admin/contact'
     | '/admin/memberships'
     | '/admin/messages'
@@ -566,6 +578,7 @@ export interface FileRouteTypes {
     | '/news/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/_authenticated/admin/categories'
     | '/_authenticated/admin/certificates'
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/dictionary'
@@ -810,6 +823,13 @@ declare module '@tanstack/react-router' {
       path: '/certificates'
       fullPath: '/admin/certificates'
       preLoaderRoute: typeof AuthenticatedAdminCertificatesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/categories': {
+      id: '/_authenticated/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AuthenticatedAdminCategoriesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/styles/': {
@@ -1061,6 +1081,7 @@ const AuthenticatedAdminStylesRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminCategoriesRoute: typeof AuthenticatedAdminCategoriesRoute
   AuthenticatedAdminCertificatesRoute: typeof AuthenticatedAdminCertificatesRouteWithChildren
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDictionaryRoute: typeof AuthenticatedAdminDictionaryRouteWithChildren
@@ -1074,6 +1095,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminCategoriesRoute: AuthenticatedAdminCategoriesRoute,
   AuthenticatedAdminCertificatesRoute:
     AuthenticatedAdminCertificatesRouteWithChildren,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
