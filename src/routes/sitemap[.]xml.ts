@@ -29,10 +29,12 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const s = createServerPublicClient();
-        const [news, styles, dict] = await Promise.all([
+        const [news, styles, dict, pages, cats] = await Promise.all([
           s.from("news_articles").select("slug").eq("published", true),
           s.from("styles").select("slug"),
           s.from("dictionary_entries").select("slug"),
+          s.from("pages").select("slug").eq("published", true),
+          s.from("page_categories").select("slug"),
         ]);
 
         const entries: SitemapEntry[] = [
@@ -40,7 +42,10 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...(news.data ?? []).map((r) => ({ path: `/news/${r.slug}`, changefreq: "weekly" as const, priority: "0.7" })),
           ...(styles.data ?? []).map((r) => ({ path: `/styles/${r.slug}`, changefreq: "monthly" as const, priority: "0.6" })),
           ...(dict.data ?? []).map((r) => ({ path: `/dictionary/${r.slug}`, changefreq: "monthly" as const, priority: "0.5" })),
+          ...(cats.data ?? []).map((r) => ({ path: `/c/${r.slug}`, changefreq: "weekly" as const, priority: "0.6" })),
+          ...(pages.data ?? []).map((r) => ({ path: `/p/${r.slug}`, changefreq: "monthly" as const, priority: "0.7" })),
         ];
+
 
         const urls = entries.map((e) =>
           [
