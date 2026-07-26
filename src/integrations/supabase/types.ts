@@ -339,6 +339,7 @@ export type Database = {
           hq_address: string | null
           id: string
           instagram: string | null
+          logo_url: string | null
           media_email: string | null
           phone: string | null
           twitter: string | null
@@ -355,6 +356,7 @@ export type Database = {
           hq_address?: string | null
           id?: string
           instagram?: string | null
+          logo_url?: string | null
           media_email?: string | null
           phone?: string | null
           twitter?: string | null
@@ -371,6 +373,7 @@ export type Database = {
           hq_address?: string | null
           id?: string
           instagram?: string | null
+          logo_url?: string | null
           media_email?: string | null
           phone?: string | null
           twitter?: string | null
