@@ -45,6 +45,7 @@ import { Route as AuthenticatedAdminNewsIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminGalleryIndexRouteImport } from './routes/_authenticated/admin.gallery.index'
 import { Route as AuthenticatedAdminDictionaryIndexRouteImport } from './routes/_authenticated/admin.dictionary.index'
 import { Route as AuthenticatedAdminCertificatesIndexRouteImport } from './routes/_authenticated/admin.certificates.index'
+import { Route as AuthenticatedAdminCategoriesIndexRouteImport } from './routes/_authenticated/admin.categories.index'
 import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
 import { Route as AuthenticatedAdminStylesNewRouteImport } from './routes/_authenticated/admin.styles.new'
 import { Route as AuthenticatedAdminStylesIdRouteImport } from './routes/_authenticated/admin.styles.$id'
@@ -252,6 +253,12 @@ const AuthenticatedAdminCertificatesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCertificatesRoute,
   } as any)
+const AuthenticatedAdminCategoriesIndexRoute =
+  AuthenticatedAdminCategoriesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminCategoriesRoute,
+  } as any)
 const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
   id: '/api/public/media/$',
   path: '/api/public/media/$',
@@ -348,7 +355,7 @@ export interface FileRoutesByFullPath {
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
-  '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
+  '/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/dictionary': typeof AuthenticatedAdminDictionaryRouteWithChildren
@@ -373,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/admin/categories/': typeof AuthenticatedAdminCategoriesIndexRoute
   '/admin/certificates/': typeof AuthenticatedAdminCertificatesIndexRoute
   '/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
   '/admin/gallery/': typeof AuthenticatedAdminGalleryIndexRoute
@@ -397,7 +405,6 @@ export interface FileRoutesByTo {
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
-  '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
@@ -416,6 +423,7 @@ export interface FileRoutesByTo {
   '/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/admin/categories': typeof AuthenticatedAdminCategoriesIndexRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesIndexRoute
   '/admin/dictionary': typeof AuthenticatedAdminDictionaryIndexRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryIndexRoute
@@ -443,7 +451,7 @@ export interface FileRoutesById {
   '/news/$slug': typeof NewsSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
-  '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRoute
+  '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/dictionary': typeof AuthenticatedAdminDictionaryRouteWithChildren
@@ -468,6 +476,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/_authenticated/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/_authenticated/admin/categories/': typeof AuthenticatedAdminCategoriesIndexRoute
   '/_authenticated/admin/certificates/': typeof AuthenticatedAdminCertificatesIndexRoute
   '/_authenticated/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
   '/_authenticated/admin/gallery/': typeof AuthenticatedAdminGalleryIndexRoute
@@ -520,6 +529,7 @@ export interface FileRouteTypes {
     | '/admin/styles/$id'
     | '/admin/styles/new'
     | '/api/public/media/$'
+    | '/admin/categories/'
     | '/admin/certificates/'
     | '/admin/dictionary/'
     | '/admin/gallery/'
@@ -544,7 +554,6 @@ export interface FileRouteTypes {
     | '/news/$slug'
     | '/styles/$slug'
     | '/verify/$code'
-    | '/admin/categories'
     | '/admin/contact'
     | '/admin/memberships'
     | '/admin/messages'
@@ -563,6 +572,7 @@ export interface FileRouteTypes {
     | '/admin/styles/$id'
     | '/admin/styles/new'
     | '/api/public/media/$'
+    | '/admin/categories'
     | '/admin/certificates'
     | '/admin/dictionary'
     | '/admin/gallery'
@@ -614,6 +624,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/styles/$id'
     | '/_authenticated/admin/styles/new'
     | '/api/public/media/$'
+    | '/_authenticated/admin/categories/'
     | '/_authenticated/admin/certificates/'
     | '/_authenticated/admin/dictionary/'
     | '/_authenticated/admin/gallery/'
@@ -893,6 +904,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCertificatesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCertificatesRoute
     }
+    '/_authenticated/admin/categories/': {
+      id: '/_authenticated/admin/categories/'
+      path: '/'
+      fullPath: '/admin/categories/'
+      preLoaderRoute: typeof AuthenticatedAdminCategoriesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminCategoriesRoute
+    }
     '/api/public/media/$': {
       id: '/api/public/media/$'
       path: '/api/public/media/$'
@@ -986,6 +1004,21 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAdminCategoriesRouteChildren {
+  AuthenticatedAdminCategoriesIndexRoute: typeof AuthenticatedAdminCategoriesIndexRoute
+}
+
+const AuthenticatedAdminCategoriesRouteChildren: AuthenticatedAdminCategoriesRouteChildren =
+  {
+    AuthenticatedAdminCategoriesIndexRoute:
+      AuthenticatedAdminCategoriesIndexRoute,
+  }
+
+const AuthenticatedAdminCategoriesRouteWithChildren =
+  AuthenticatedAdminCategoriesRoute._addFileChildren(
+    AuthenticatedAdminCategoriesRouteChildren,
+  )
 
 interface AuthenticatedAdminCertificatesRouteChildren {
   AuthenticatedAdminCertificatesIdRoute: typeof AuthenticatedAdminCertificatesIdRoute
@@ -1100,7 +1133,7 @@ const AuthenticatedAdminStylesRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminCategoriesRoute: typeof AuthenticatedAdminCategoriesRoute
+  AuthenticatedAdminCategoriesRoute: typeof AuthenticatedAdminCategoriesRouteWithChildren
   AuthenticatedAdminCertificatesRoute: typeof AuthenticatedAdminCertificatesRouteWithChildren
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDictionaryRoute: typeof AuthenticatedAdminDictionaryRouteWithChildren
@@ -1115,7 +1148,8 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminCategoriesRoute: AuthenticatedAdminCategoriesRoute,
+  AuthenticatedAdminCategoriesRoute:
+    AuthenticatedAdminCategoriesRouteWithChildren,
   AuthenticatedAdminCertificatesRoute:
     AuthenticatedAdminCertificatesRouteWithChildren,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
