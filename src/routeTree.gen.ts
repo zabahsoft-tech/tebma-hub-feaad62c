@@ -42,6 +42,7 @@ import { Route as AuthenticatedAdminNewsIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminGalleryIndexRouteImport } from './routes/_authenticated/admin.gallery.index'
 import { Route as AuthenticatedAdminDictionaryIndexRouteImport } from './routes/_authenticated/admin.dictionary.index'
 import { Route as AuthenticatedAdminCertificatesIndexRouteImport } from './routes/_authenticated/admin.certificates.index'
+import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
 import { Route as AuthenticatedAdminStylesNewRouteImport } from './routes/_authenticated/admin.styles.new'
 import { Route as AuthenticatedAdminStylesIdRouteImport } from './routes/_authenticated/admin.styles.$id'
 import { Route as AuthenticatedAdminRulesNewRouteImport } from './routes/_authenticated/admin.rules.new'
@@ -231,6 +232,11 @@ const AuthenticatedAdminCertificatesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCertificatesRoute,
   } as any)
+const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
+  id: '/api/public/media/$',
+  path: '/api/public/media/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminStylesNewRoute =
   AuthenticatedAdminStylesNewRouteImport.update({
     id: '/new',
@@ -343,6 +349,7 @@ export interface FileRoutesByFullPath {
   '/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
   '/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/admin/certificates/': typeof AuthenticatedAdminCertificatesIndexRoute
   '/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
   '/admin/gallery/': typeof AuthenticatedAdminGalleryIndexRoute
@@ -382,6 +389,7 @@ export interface FileRoutesByTo {
   '/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
   '/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesIndexRoute
   '/admin/dictionary': typeof AuthenticatedAdminDictionaryIndexRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryIndexRoute
@@ -430,6 +438,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
   '/_authenticated/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/_authenticated/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/_authenticated/admin/certificates/': typeof AuthenticatedAdminCertificatesIndexRoute
   '/_authenticated/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
   '/_authenticated/admin/gallery/': typeof AuthenticatedAdminGalleryIndexRoute
@@ -478,6 +487,7 @@ export interface FileRouteTypes {
     | '/admin/rules/new'
     | '/admin/styles/$id'
     | '/admin/styles/new'
+    | '/api/public/media/$'
     | '/admin/certificates/'
     | '/admin/dictionary/'
     | '/admin/gallery/'
@@ -517,6 +527,7 @@ export interface FileRouteTypes {
     | '/admin/rules/new'
     | '/admin/styles/$id'
     | '/admin/styles/new'
+    | '/api/public/media/$'
     | '/admin/certificates'
     | '/admin/dictionary'
     | '/admin/gallery'
@@ -564,6 +575,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/rules/new'
     | '/_authenticated/admin/styles/$id'
     | '/_authenticated/admin/styles/new'
+    | '/api/public/media/$'
     | '/_authenticated/admin/certificates/'
     | '/_authenticated/admin/dictionary/'
     | '/_authenticated/admin/gallery/'
@@ -586,6 +598,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StylesRoute: typeof StylesRouteWithChildren
   VerifyRoute: typeof VerifyRouteWithChildren
+  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -820,6 +833,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/certificates/'
       preLoaderRoute: typeof AuthenticatedAdminCertificatesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCertificatesRoute
+    }
+    '/api/public/media/$': {
+      id: '/api/public/media/$'
+      path: '/api/public/media/$'
+      fullPath: '/api/public/media/$'
+      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/styles/new': {
       id: '/_authenticated/admin/styles/new'
@@ -1118,6 +1138,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StylesRoute: StylesRouteWithChildren,
   VerifyRoute: VerifyRouteWithChildren,
+  ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
