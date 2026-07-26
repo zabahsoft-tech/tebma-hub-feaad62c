@@ -21,6 +21,8 @@ export function TextField({
   required,
   defaultValue,
   placeholder,
+  maxLength,
+  onChange,
 }: {
   label: string;
   name: string;
@@ -28,6 +30,8 @@ export function TextField({
   required?: boolean;
   defaultValue?: string | number | null;
   placeholder?: string;
+  maxLength?: number;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }) {
   return (
     <label className="block text-sm">
@@ -38,6 +42,8 @@ export function TextField({
         required={required}
         defaultValue={defaultValue ?? undefined}
         placeholder={placeholder}
+        maxLength={maxLength}
+        onChange={onChange}
         className="w-full py-2 px-3 bg-background border border-border rounded-sm focus:outline-none focus:ring-1 focus:ring-foreground/30"
       />
     </label>
