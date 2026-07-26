@@ -1,6 +1,18 @@
 import { Link } from "@tanstack/react-router";
 import { Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function TextField({
   label,
@@ -150,23 +162,7 @@ export function DataTable<T extends { id: string }>({
                   <Link to={editTo(r)} className="p-2 rounded-sm hover:bg-accent" aria-label="Edit">
                     <Pencil className="size-3.5" />
                   </Link>
-                  {onDelete ? (
-                    <button
-                      onClick={async () => {
-                        if (!confirm("Delete this record?")) return;
-                        try {
-                          await onDelete(r);
-                          toast.success("Deleted");
-                        } catch (e) {
-                          toast.error(e instanceof Error ? e.message : "Delete failed");
-                        }
-                      }}
-                      className="p-2 rounded-sm hover:bg-destructive/10 text-destructive"
-                      aria-label="Delete"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
-                  ) : null}
+                  {onDelete ? <DeleteButton row={r} onDelete={onDelete} /> : null}
                 </div>
               </td>
             </tr>
@@ -174,5 +170,52 @@ export function DataTable<T extends { id: string }>({
         </tbody>
       </table>
     </div>
+  );
+}
+
+function DeleteButton<T extends { id: string }>({ row, onDelete }: { row: T; onDelete: (row: T) => Promise<void> }) {
+  const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <button
+          className="p-2 rounded-sm hover:bg-destructive/10 text-destructive"
+          aria-label="Delete"
+        >
+          <Trash2 className="size-3.5" />
+        </button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete this record?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. The record will be permanently removed.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            disabled={pending}
+            onClick={async (e) => {
+              e.preventDefault();
+              setPending(true);
+              try {
+                await onDelete(row);
+                toast.success("Deleted");
+                setOpen(false);
+              } catch (err) {
+                toast.error(err instanceof Error ? err.message : "Delete failed");
+              } finally {
+                setPending(false);
+              }
+            }}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {pending ? "Deleting…" : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
