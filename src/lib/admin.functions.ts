@@ -460,6 +460,7 @@ const contactInfoSchema = z.object({
   instagram: z.string().trim().max(300).optional().nullable(),
   youtube: z.string().trim().max(300).optional().nullable(),
   twitter: z.string().trim().max(300).optional().nullable(),
+  logo_url: z.string().trim().max(2000).optional().nullable().transform((v) => (v ? v : null)),
 });
 
 export const adminGetContactInfo = createServerFn({ method: "GET" })
