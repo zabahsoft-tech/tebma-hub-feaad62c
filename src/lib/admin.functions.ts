@@ -520,3 +520,140 @@ export const adminUpsertContactInfo = createServerFn({ method: "POST" })
     return { id: row.id };
   });
 
+
+// ---------- Page categories ----------
+const categorySchema = z.object({
+  id: z.string().uuid().optional(),
+  slug: z.string().trim().min(1).max(200),
+  name: z.string().trim().min(1).max(200),
+  sort_order: z.number().int().default(0),
+  visible_in_nav: z.boolean().default(true),
+});
+
+export const adminListCategories = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await ensureAdmin(context);
+    const { data, error } = await context.supabase
+      .from("page_categories")
+      .select("id,slug,name,sort_order,visible_in_nav,updated_at")
+      .order("sort_order")
+      .order("name");
+    if (error) throw error;
+    return data ?? [];
+  });
+
+export const adminGetCategory = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    const { data: row, error } = await context.supabase
+      .from("page_categories")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw error;
+    return row;
+  });
+
+export const adminUpsertCategory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => categorySchema.parse(d))
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    const { id, ...rest } = data;
+    if (id) {
+      const { error } = await context.supabase.from("page_categories").update(rest).eq("id", id);
+      if (error) throw error;
+      return { id };
+    }
+    const { data: row, error } = await context.supabase
+      .from("page_categories")
+      .insert(rest)
+      .select("id")
+      .single();
+    if (error) throw error;
+    return { id: row.id };
+  });
+
+export const adminDeleteCategory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    const { error } = await context.supabase.from("page_categories").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+// ---------- Pages ----------
+const pageSchema = z.object({
+  id: z.string().uuid().optional(),
+  slug: z.string().trim().min(1).max(200),
+  title: z.string().trim().min(1).max(300),
+  category_id: z.string().uuid().optional().nullable().or(z.literal("")).transform((v) => (v ? v : null)),
+  excerpt: z.string().trim().max(500).optional().nullable(),
+  body: z.string().max(200000).default(""),
+  cover_url: z.string().trim().max(2000).optional().nullable().transform((v) => (v ? v : null)),
+  seo_title: z.string().trim().max(300).optional().nullable().transform((v) => (v ? v : null)),
+  seo_description: z.string().trim().max(500).optional().nullable().transform((v) => (v ? v : null)),
+  published: z.boolean().default(true),
+  sort_order: z.number().int().default(0),
+});
+
+export const adminListPages = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await ensureAdmin(context);
+    const [{ data, error }, { data: cats }] = await Promise.all([
+      context.supabase
+        .from("pages")
+        .select("id,slug,title,category_id,published,sort_order,updated_at")
+        .order("updated_at", { ascending: false }),
+      context.supabase.from("page_categories").select("id,name"),
+    ]);
+    if (error) throw error;
+    const map = new Map((cats ?? []).map((c: { id: string; name: string }) => [c.id, c.name]));
+    return (data ?? []).map((p: { category_id: string | null }) => ({
+      ...p,
+      category_name: p.category_id ? (map.get(p.category_id) ?? null) : null,
+    }));
+  });
+
+export const adminGetPage = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    const { data: row, error } = await context.supabase.from("pages").select("*").eq("id", data.id).maybeSingle();
+    if (error) throw error;
+    return row;
+  });
+
+export const adminUpsertPage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => pageSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    const { id, ...rest } = data;
+    const payload = { ...rest, published_at: rest.published ? new Date().toISOString() : null };
+    if (id) {
+      const { error } = await context.supabase.from("pages").update(payload).eq("id", id);
+      if (error) throw error;
+      return { id };
+    }
+    const { data: row, error } = await context.supabase.from("pages").insert(payload).select("id").single();
+    if (error) throw error;
+    return { id: row.id };
+  });
+
+export const adminDeletePage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    const { error } = await context.supabase.from("pages").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
