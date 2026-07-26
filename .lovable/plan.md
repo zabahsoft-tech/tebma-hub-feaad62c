@@ -1,52 +1,47 @@
 ## Goal
 
-Upgrade the `/admin` experience so the sidebar is fixed, collapsible, and mobile-friendly, and give the dashboard overview a richer, more useful landing view. Confirm forms already live on their own routes (not modals) and remove the last remaining native `confirm()` modal from the delete action.
+Add a CMS-managed **Pages** system grouped by **Categories**. Each category becomes a dropdown in the site navbar listing its published pages. Pages are authored with the rich editor, support image upload, and carry full per-page SEO.
 
-## What changes
+## Database
 
-### 1. New admin shell built on shadcn `Sidebar`
+Two new tables (with RLS + grants, public read / admin write, matching existing tables):
 
-Rewrite `src/components/admin/AdminShell.tsx` to use the shadcn `Sidebar` primitives already present in `src/components/ui/sidebar.tsx`:
+- `page_categories` — `slug`, `name`, `sort_order`, `visible_in_nav`
+- `pages` — `slug`, `title`, `category_id`, `excerpt`, `body` (rich HTML), `cover_url`, `seo_title`, `seo_description`, `published`, `published_at`, `sort_order`
 
-- Wrap the layout in `SidebarProvider` with `defaultOpen` remembered via cookie (built-in behavior).
-- `<Sidebar collapsible="icon">` — on desktop it collapses to a narrow icon rail; on mobile it becomes an off-canvas `Sheet` automatically.
-- Sections in the sidebar:
-  - Brand header with TEBMA mark + short label (label hides when collapsed).
-  - **Content** group: Overview, News, Styles, Rules, Dictionary, Gallery.
-  - **Operations** group: Certificates, Applications, Messages.
-  - Footer: user email + sign-out button.
-- Each item uses `SidebarMenuButton asChild` wrapping a TanStack `Link`, with `isActive` derived from `useRouterState` pathname (exact match for Overview, prefix match otherwise) and tooltip prop for the collapsed state.
-- Sticky top app bar inside `SidebarInset` containing `SidebarTrigger` (always visible so users can collapse/expand on any screen), breadcrumb-style page title, and a "View public site" link.
-- Uses `w-[var(--sidebar-width)]` explicit `var()` syntax where needed (Tailwind v4 sidebar-width fix).
+Public (anon) can read categories and published pages; admins manage everything.
 
-### 2. Enhanced dashboard overview (`admin.index.tsx`)
+## Public site
 
-Replace the plain card grid with a richer landing:
+- New route `/p/$slug` — renders a page: cover image, title, rich HTML body via `prose`, breadcrumb back to its category.
+- New route `/c/$slug` — category landing listing its published pages (cards with cover + excerpt).
+- **Navbar**: fetch categories + their pages once (cached query) and append a dropdown per category after the fixed links (News, Membership, Gallery…). Fixed links stay unchanged. Dropdown built with the existing shadcn `NavigationMenu`/`DropdownMenu`, keyboard accessible, and collapsing into a stacked list on mobile.
+- Footer gets a "Sections" column listing categories (small addition, optional to keep).
 
-- Top row: 4 stat cards — Published articles, Disciplines, Pending applications, Unread messages — fed by a new `adminDashboardStats` server function that returns counts (uses existing admin Supabase client with `ensureAdmin`).
-- Middle: "Recent applications" and "Recent messages" lists (5 each) linking to their respective admin pages.
-- Bottom: quick-access card grid (existing content but restyled to match).
+## SEO
 
-### 3. Inline delete confirmation (remove `window.confirm`)
+- Per-page `head()`: `seo_title` (falls back to title) `— TEBMA`, `seo_description` (falls back to excerpt), `og:title`, `og:description`, `og:type: article`, `og:image`/`twitter:image` from `cover_url` when it's an absolute URL, self-referencing `canonical` and `og:url`.
+- `Article` + `BreadcrumbList` JSON-LD on page detail; `CollectionPage` JSON-LD on category route.
+- `sitemap.xml` extended to include all published pages and categories.
 
-`DataTable` in `src/components/admin/AdminForm.tsx` currently uses `confirm("Delete this record?")`. Replace it with an inline `AlertDialog` (shadcn) so no browser-native modal is used. Forms themselves are already dedicated pages (`admin.news.new.tsx`, `admin.news.$id.tsx`, etc.) — no changes needed there.
+## Admin CMS
 
-### 4. Small polish
+New sidebar group entries under Content:
 
-- Page container (`AdminPage`) gets `max-w-none` and consistent horizontal padding so wide tables use the available width once the sidebar is collapsed.
-- Active-link styling matches shadcn defaults instead of the custom black pill.
-- Header row uses the responsive `grid-cols-[minmax(0,1fr)_auto]` pattern so titles never clip on mobile.
+- `/admin/categories` — list + `new` / `$id` form pages (name, slug auto-suggest, sort order, show-in-nav toggle).
+- `/admin/pages` — list + `new` / `$id` form pages with: title, slug, category select, excerpt, **RichEditor** body, **ImageUpload** cover (picture only, no URL field — same component already used for news/styles), SEO title + SEO description fields, publish toggle (defaults to published), sort order.
+
+All forms are dedicated routes (no modals), following the existing `admin.[resource].tsx` layout + `.index/.new/.$id` structure. Server functions added to `src/lib/public.functions.ts` (public reads) and `src/lib/admin.functions.ts` (admin CRUD).
+
+## Seed
+
+One starter category ("Federation") with one sample published page so the navbar dropdown is visible immediately.
 
 ## Files touched
 
-- `src/components/admin/AdminShell.tsx` — rewritten to use shadcn Sidebar.
-- `src/components/admin/AdminForm.tsx` — swap `confirm()` for `AlertDialog`.
-- `src/routes/_authenticated/admin.tsx` — unchanged export, still renders `AdminShell`.
-- `src/routes/_authenticated/admin.index.tsx` — new stats + recents layout.
-- `src/lib/admin.functions.ts` — add `adminDashboardStats` server function (counts + recents).
-
-## Out of scope
-
-- No changes to individual admin CRUD form routes (already page-based).
-- No auth or RLS changes.
-- No changes to the public site.
+- migration: `page_categories`, `pages`
+- `src/lib/public.functions.ts`, `src/lib/admin.functions.ts`
+- `src/components/site/SiteHeader.tsx` (+ footer)
+- `src/routes/p.$slug.tsx`, `src/routes/c.$slug.tsx`, `src/routes/sitemap[.]xml.ts`
+- `src/routes/_authenticated/admin.categories.*`, `admin.pages.*`
+- `src/components/admin/AdminShell.tsx` (nav entries)
