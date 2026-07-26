@@ -481,9 +481,19 @@ export const adminUpsertContactInfo = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => contactInfoSchema.parse(d))
   .handler(async ({ context, data }) => {
     await ensureAdmin(context);
-    const payload = Object.fromEntries(
-      Object.entries(data).map(([k, v]) => [k, v ? v : null]),
-    );
+    const payload = {
+      hq_address: data.hq_address ?? null,
+      asia_office: data.asia_office ?? null,
+      americas_office: data.americas_office ?? null,
+      general_email: data.general_email ?? null,
+      media_email: data.media_email ?? null,
+      phone: data.phone ?? null,
+      website: data.website ?? null,
+      facebook: data.facebook ?? null,
+      instagram: data.instagram ?? null,
+      youtube: data.youtube ?? null,
+      twitter: data.twitter ?? null,
+    };
     const { data: existing, error: readErr } = await context.supabase
       .from("site_contact_info")
       .select("id")
