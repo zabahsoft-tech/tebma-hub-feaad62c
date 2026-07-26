@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 
@@ -65,6 +66,10 @@ function currentTitle(pathname: string): string {
 }
 
 function NavGroup({ label, items, pathname }: { label: string; items: NavItem[]; pathname: string }) {
+  const { isMobile, setOpenMobile } = useSidebar();
+  const closeOnMobile = () => {
+    if (isMobile) setOpenMobile(false);
+  };
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
@@ -76,7 +81,7 @@ function NavGroup({ label, items, pathname }: { label: string; items: NavItem[];
             return (
               <SidebarMenuItem key={item.to}>
                 <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
-                  <Link to={item.to}>
+                  <Link to={item.to} onClick={closeOnMobile}>
                     <Icon className="size-4" />
                     <span>{item.label}</span>
                   </Link>
