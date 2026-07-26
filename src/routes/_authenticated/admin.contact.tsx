@@ -38,6 +38,7 @@ function ContactInfoPage() {
           instagram: get("instagram"),
           youtube: get("youtube"),
           twitter: get("twitter"),
+          logo_url: get("logo_url"),
         },
       });
       toast.success("Contact info updated");
