@@ -494,6 +494,7 @@ export const adminUpsertContactInfo = createServerFn({ method: "POST" })
       instagram: data.instagram ?? null,
       youtube: data.youtube ?? null,
       twitter: data.twitter ?? null,
+      logo_url: data.logo_url ?? null,
     };
     const { data: existing, error: readErr } = await context.supabase
       .from("site_contact_info")
