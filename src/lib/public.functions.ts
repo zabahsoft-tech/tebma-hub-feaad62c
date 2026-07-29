@@ -110,13 +110,14 @@ export const verifyCertificate = createServerFn({ method: "GET" })
   .inputValidator((d: { code: string }) => ({ code: String(d.code).trim().toUpperCase().slice(0, 100) }))
   .handler(async ({ data }) => {
     if (!data.code) return { found: false as const };
-    const s = createServerPublicClient();
-    const { data: rows, error } = await s.rpc("verify_certificate_by_code", { _code: data.code });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: rows, error } = await supabaseAdmin.rpc("verify_certificate_by_code", { _code: data.code });
     if (error) throw error;
     const row = Array.isArray(rows) ? rows[0] : rows;
     if (!row) return { found: false as const };
     return { found: true as const, certificate: row };
   });
+
 
 // ============ SUBMISSIONS ============
 import { z } from "zod";
