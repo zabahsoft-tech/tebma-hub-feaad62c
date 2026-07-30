@@ -1,47 +1,33 @@
 ## Goal
 
-Add a CMS-managed **Pages** system grouped by **Categories**. Each category becomes a dropdown in the site navbar listing its published pages. Pages are authored with the rich editor, support image upload, and carry full per-page SEO.
+Make the admin sign-in keep users logged in across browser restarts, with an explicit "Remember me" choice, plus a few auth-page quality upgrades.
 
-## Database
+## What changes
 
-Two new tables (with RLS + grants, public read / admin write, matching existing tables):
+**1. Remember me checkbox on `/auth`**
+- Add a styled checkbox ("Keep me signed in") to the sign-in form, checked by default.
+- Remember the last used email in `localStorage` and pre-fill it on return visits.
 
-- `page_categories` — `slug`, `name`, `sort_order`, `visible_in_nav`
-- `pages` — `slug`, `title`, `category_id`, `excerpt`, `body` (rich HTML), `cover_url`, `seo_title`, `seo_description`, `published`, `published_at`, `sort_order`
+**2. Session persistence behavior**
+- Sessions already persist in browser storage and auto-refresh, so a signed-in admin stays signed in indefinitely — that stays the default when the box is checked.
+- When the box is **unchecked**, store a "session-only" flag; on app start, if that flag is set and the browser was fully closed since (detected via a `sessionStorage` marker that dies with the tab), sign the user out before rendering. This gives a true "don't keep me signed in" behavior without touching the generated Supabase client.
 
-Public (anon) can read categories and published pages; admins manage everything.
+**3. Already-signed-in handling**
+- If a signed-in user opens `/auth`, redirect them straight to `/admin` (or the `redirect` search param) instead of showing the form.
+- Show a small "Checking session…" state while that check runs, so no form flash.
 
-## Public site
+**4. Forgot password**
+- Add a "Forgot password?" link on the sign-in tab that sends a reset email.
+- Add a public `/reset-password` route where the user sets a new password, then lands on `/admin`.
 
-- New route `/p/$slug` — renders a page: cover image, title, rich HTML body via `prose`, breadcrumb back to its category.
-- New route `/c/$slug` — category landing listing its published pages (cards with cover + excerpt).
-- **Navbar**: fetch categories + their pages once (cached query) and append a dropdown per category after the fixed links (News, Membership, Gallery…). Fixed links stay unchanged. Dropdown built with the existing shadcn `NavigationMenu`/`DropdownMenu`, keyboard accessible, and collapsing into a stacked list on mobile.
-- Footer gets a "Sections" column listing categories (small addition, optional to keep).
+**5. Polish**
+- Show/hide password toggle.
+- Clearer inline error messages (invalid credentials vs. unconfirmed email).
+- Disable the form and show a spinner while submitting.
 
-## SEO
+## Technical notes
 
-- Per-page `head()`: `seo_title` (falls back to title) `— TEBMA`, `seo_description` (falls back to excerpt), `og:title`, `og:description`, `og:type: article`, `og:image`/`twitter:image` from `cover_url` when it's an absolute URL, self-referencing `canonical` and `og:url`.
-- `Article` + `BreadcrumbList` JSON-LD on page detail; `CollectionPage` JSON-LD on category route.
-- `sitemap.xml` extended to include all published pages and categories.
-
-## Admin CMS
-
-New sidebar group entries under Content:
-
-- `/admin/categories` — list + `new` / `$id` form pages (name, slug auto-suggest, sort order, show-in-nav toggle).
-- `/admin/pages` — list + `new` / `$id` form pages with: title, slug, category select, excerpt, **RichEditor** body, **ImageUpload** cover (picture only, no URL field — same component already used for news/styles), SEO title + SEO description fields, publish toggle (defaults to published), sort order.
-
-All forms are dedicated routes (no modals), following the existing `admin.[resource].tsx` layout + `.index/.new/.$id` structure. Server functions added to `src/lib/public.functions.ts` (public reads) and `src/lib/admin.functions.ts` (admin CRUD).
-
-## Seed
-
-One starter category ("Federation") with one sample published page so the navbar dropdown is visible immediately.
-
-## Files touched
-
-- migration: `page_categories`, `pages`
-- `src/lib/public.functions.ts`, `src/lib/admin.functions.ts`
-- `src/components/site/SiteHeader.tsx` (+ footer)
-- `src/routes/p.$slug.tsx`, `src/routes/c.$slug.tsx`, `src/routes/sitemap[.]xml.ts`
-- `src/routes/_authenticated/admin.categories.*`, `admin.pages.*`
-- `src/components/admin/AdminShell.tsx` (nav entries)
+- `src/routes/auth.tsx`: add checkbox, remembered-email prefill, password visibility toggle, signed-in redirect via `supabase.auth.getUser()`, and forgot-password flow using `resetPasswordForEmail` with `redirectTo: ${origin}/reset-password`.
+- New `src/lib/auth-persistence.ts`: helpers for the remember flag and the browser-restart detection; called once in `src/routes/__root.tsx` on mount (client-only).
+- New `src/routes/reset-password.tsx`: public route calling `supabase.auth.updateUser({ password })`.
+- No database or server-function changes; the generated Supabase client stays untouched.
