@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { ChevronDown, Menu } from "lucide-react";
+import { ChevronDown, Menu, Facebook, Instagram, Youtube, Twitter } from "lucide-react";
 import { NAV_LINKS, SITE_SHORT } from "@/lib/site";
 import { getContactInfo, listNavCategories } from "@/lib/public.functions";
 import {
@@ -25,8 +25,22 @@ export function SiteHeader() {
     queryFn: () => listNavCategories(),
     staleTime: 5 * 60 * 1000,
   });
-  const logoUrl = (data as { logo_url?: string | null } | null)?.logo_url ?? null;
+  const info = data as {
+    logo_url?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+    youtube?: string | null;
+    twitter?: string | null;
+  } | null;
+  const logoUrl = info?.logo_url ?? null;
   const cats = categories ?? [];
+  const socials = [
+    { label: "Facebook", href: info?.facebook, Icon: Facebook },
+    { label: "Instagram", href: info?.instagram, Icon: Instagram },
+    { label: "YouTube", href: info?.youtube, Icon: Youtube },
+    { label: "Twitter / X", href: info?.twitter, Icon: Twitter },
+  ].filter((s) => !!s.href) as Array<{ label: string; href: string; Icon: typeof Facebook }>;
+
 
   const mark = logoUrl ? (
     <img src={logoUrl} alt={`${SITE_SHORT} logo`} className="h-9 w-auto shrink-0 object-contain md:h-10" />

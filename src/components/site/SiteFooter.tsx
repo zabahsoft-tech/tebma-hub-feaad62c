@@ -67,9 +67,27 @@ export function SiteFooter() {
                 <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground">Contact HQ</Link>
                 <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground">Admin Sign in</Link>
               </nav>
+              {socials.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {socials.map(({ label, href, Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={label}
+                      title={label}
+                      className="inline-flex size-9 items-center justify-center rounded-sm border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    >
+                      <Icon className="size-4" aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
+
         <div className="mt-16 pt-8 border-t border-border/60 flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
             &copy; {new Date().getFullYear()} {SITE_SHORT}
