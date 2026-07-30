@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Facebook, Instagram, Youtube, Twitter } from "lucide-react";
 import { SITE_SHORT } from "@/lib/site";
 import { getContactInfo } from "@/lib/public.functions";
 
@@ -9,7 +10,20 @@ export function SiteFooter() {
     queryFn: () => getContactInfo(),
     staleTime: 5 * 60 * 1000,
   });
-  const logoUrl = (data as { logo_url?: string | null } | null)?.logo_url ?? null;
+  const info = data as {
+    logo_url?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+    youtube?: string | null;
+    twitter?: string | null;
+  } | null;
+  const logoUrl = info?.logo_url ?? null;
+  const socials = [
+    { label: "Facebook", href: info?.facebook, Icon: Facebook },
+    { label: "Instagram", href: info?.instagram, Icon: Instagram },
+    { label: "YouTube", href: info?.youtube, Icon: Youtube },
+    { label: "Twitter / X", href: info?.twitter, Icon: Twitter },
+  ].filter((s) => !!s.href) as Array<{ label: string; href: string; Icon: typeof Facebook }>;
 
   return (
     <footer className="py-20 border-t border-border/60 mt-24">
