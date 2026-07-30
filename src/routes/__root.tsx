@@ -1,9 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
-  Link,
   createRootRouteWithContext,
-  useRouter,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,6 +11,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { RouteLoader } from "@/components/RouteLoader";
+import { NotFoundState, ErrorState } from "@/components/site/ErrorStates";
+
 
 function NotFoundComponent() {
   return <NotFoundState />;
