@@ -13,6 +13,7 @@ import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as StylesRouteImport } from './routes/styles'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RulesRouteImport } from './routes/rules'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -85,6 +86,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RulesRoute = RulesRouteImport.update({
   id: '/rules',
   path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsRoute = NewsRouteImport.update({
@@ -393,6 +399,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/rules': typeof RulesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
@@ -451,6 +458,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/rules': typeof RulesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
@@ -502,6 +510,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/rules': typeof RulesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
@@ -562,6 +571,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/membership'
     | '/news'
+    | '/reset-password'
     | '/rules'
     | '/sitemap.xml'
     | '/styles'
@@ -620,6 +630,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/membership'
     | '/news'
+    | '/reset-password'
     | '/rules'
     | '/sitemap.xml'
     | '/styles'
@@ -670,6 +681,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/membership'
     | '/news'
+    | '/reset-password'
     | '/rules'
     | '/sitemap.xml'
     | '/styles'
@@ -730,6 +742,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   MembershipRoute: typeof MembershipRoute
   NewsRoute: typeof NewsRouteWithChildren
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RulesRoute: typeof RulesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StylesRoute: typeof StylesRouteWithChildren
@@ -767,6 +780,13 @@ declare module '@tanstack/react-router' {
       path: '/rules'
       fullPath: '/rules'
       preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news': {
@@ -1393,6 +1413,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   MembershipRoute: MembershipRoute,
   NewsRoute: NewsRouteWithChildren,
+  ResetPasswordRoute: ResetPasswordRoute,
   RulesRoute: RulesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StylesRoute: StylesRouteWithChildren,
@@ -1404,13 +1425,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -12,6 +12,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { RouteLoader } from "@/components/RouteLoader";
 import { NotFoundState, ErrorState } from "@/components/site/ErrorStates";
+import { enforceSessionPersistence } from "@/lib/auth-persistence";
 
 
 function NotFoundComponent() {
@@ -105,6 +106,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    void enforceSessionPersistence();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
