@@ -181,6 +181,23 @@ export function SiteHeader() {
               ),
             )}
           </nav>
+          {socials.length > 0 && (
+            <div className="flex items-center gap-3">
+              {socials.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={label}
+                  title={label}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Icon className="size-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </header>
