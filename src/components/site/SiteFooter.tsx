@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Facebook, Instagram, Youtube, Twitter } from "lucide-react";
 import { SITE_SHORT } from "@/lib/site";
 import { getContactInfo } from "@/lib/public.functions";
 
@@ -9,7 +10,20 @@ export function SiteFooter() {
     queryFn: () => getContactInfo(),
     staleTime: 5 * 60 * 1000,
   });
-  const logoUrl = (data as { logo_url?: string | null } | null)?.logo_url ?? null;
+  const info = data as {
+    logo_url?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+    youtube?: string | null;
+    twitter?: string | null;
+  } | null;
+  const logoUrl = info?.logo_url ?? null;
+  const socials = [
+    { label: "Facebook", href: info?.facebook, Icon: Facebook },
+    { label: "Instagram", href: info?.instagram, Icon: Instagram },
+    { label: "YouTube", href: info?.youtube, Icon: Youtube },
+    { label: "Twitter / X", href: info?.twitter, Icon: Twitter },
+  ].filter((s) => !!s.href) as Array<{ label: string; href: string; Icon: typeof Facebook }>;
 
   return (
     <footer className="py-20 border-t border-border/60 mt-24">
@@ -53,9 +67,27 @@ export function SiteFooter() {
                 <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground">Contact HQ</Link>
                 <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground">Admin Sign in</Link>
               </nav>
+              {socials.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {socials.map(({ label, href, Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={label}
+                      title={label}
+                      className="inline-flex size-9 items-center justify-center rounded-sm border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    >
+                      <Icon className="size-4" aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
+
         <div className="mt-16 pt-8 border-t border-border/60 flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
             &copy; {new Date().getFullYear()} {SITE_SHORT}
