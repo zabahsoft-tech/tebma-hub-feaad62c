@@ -124,6 +124,23 @@ export function SiteHeader() {
                   ),
                 )}
               </nav>
+              {socials.length > 0 && (
+                <div className="flex items-center gap-2 border-t border-border pt-4">
+                  {socials.map(({ label, href, Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={label}
+                      title={label}
+                      className="inline-flex size-9 items-center justify-center rounded-sm border border-border text-muted-foreground hover:bg-accent hover:text-foreground"
+                    >
+                      <Icon className="size-4" aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </SheetContent>
           </Sheet>
         </div>
