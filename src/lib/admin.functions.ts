@@ -146,9 +146,12 @@ const ruleSchema = z.object({
   id: z.string().uuid().optional(),
   slug: z.string().trim().min(1).max(120),
   title: z.string().trim().min(1).max(200),
+  excerpt: z.string().trim().max(500).optional().nullable(),
+  cover_url: z.string().trim().max(2000).optional().nullable(),
   body: z.string().max(50000).default(""),
   sort_order: z.coerce.number().int().default(0),
 });
+
 
 export const adminListRules = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
