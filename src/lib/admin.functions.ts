@@ -241,7 +241,14 @@ export const adminGetDictionary = createServerFn({ method: "GET" })
     await ensureAdmin(context);
     const { data: row, error } = await context.supabase.from("dictionary_entries").select("*").eq("id", data.id).maybeSingle();
     if (error) throw error;
-    return row;
+    if (!row) return null;
+    const { data: media, error: mErr } = await context.supabase
+      .from("dictionary_media")
+      .select("id,kind,url,poster_url,caption,sort_order")
+      .eq("entry_id", data.id)
+      .order("sort_order");
+    if (mErr) throw mErr;
+    return { ...row, media: media ?? [] };
   });
 
 export const adminUpsertDictionary = createServerFn({ method: "POST" })
@@ -256,15 +263,33 @@ export const adminUpsertDictionary = createServerFn({ method: "POST" })
       image_url: data.image_url ?? null,
       tags: data.tags,
     };
-    if (data.id) {
-      const { error } = await context.supabase.from("dictionary_entries").update(payload).eq("id", data.id);
+    let entryId = data.id;
+    if (entryId) {
+      const { error } = await context.supabase.from("dictionary_entries").update(payload).eq("id", entryId);
       if (error) throw error;
-      return { id: data.id };
+    } else {
+      const { data: row, error } = await context.supabase.from("dictionary_entries").insert(payload).select("id").single();
+      if (error) throw error;
+      entryId = row.id;
     }
-    const { data: row, error } = await context.supabase.from("dictionary_entries").insert(payload).select("id").single();
-    if (error) throw error;
-    return { id: row.id };
+
+    const { error: delErr } = await context.supabase.from("dictionary_media").delete().eq("entry_id", entryId);
+    if (delErr) throw delErr;
+    if (data.media.length) {
+      const rows = data.media.map((m, i) => ({
+        entry_id: entryId,
+        kind: m.kind,
+        url: m.url,
+        poster_url: m.poster_url || null,
+        caption: m.caption || null,
+        sort_order: i,
+      }));
+      const { error: insErr } = await context.supabase.from("dictionary_media").insert(rows);
+      if (insErr) throw insErr;
+    }
+    return { id: entryId };
   });
+
 
 export const adminDeleteDictionary = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
