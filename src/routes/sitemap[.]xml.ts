@@ -29,12 +29,13 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const s = createServerPublicClient();
-        const [news, styles, dict, pages, cats] = await Promise.all([
+        const [news, styles, dict, pages, cats, rules] = await Promise.all([
           s.from("news_articles").select("slug").eq("published", true),
           s.from("styles").select("slug"),
           s.from("dictionary_entries").select("slug"),
           s.from("pages").select("slug").eq("published", true),
           s.from("page_categories").select("slug"),
+          s.from("rules_sections").select("slug"),
         ]);
 
         const entries: SitemapEntry[] = [
@@ -44,7 +45,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...(dict.data ?? []).map((r) => ({ path: `/dictionary/${r.slug}`, changefreq: "monthly" as const, priority: "0.5" })),
           ...(cats.data ?? []).map((r) => ({ path: `/c/${r.slug}`, changefreq: "weekly" as const, priority: "0.6" })),
           ...(pages.data ?? []).map((r) => ({ path: `/p/${r.slug}`, changefreq: "monthly" as const, priority: "0.7" })),
+          ...(rules.data ?? []).map((r) => ({ path: `/rules/${r.slug}`, changefreq: "monthly" as const, priority: "0.6" })),
         ];
+
 
 
         const urls = entries.map((e) =>
