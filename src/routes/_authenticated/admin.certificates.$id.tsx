@@ -5,6 +5,7 @@ import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, TextArea, SelectField, SaveBar } from "@/components/admin/AdminForm";
 import { adminGetCert, adminUpsertCert } from "@/lib/admin.functions";
 import { toast } from "sonner";
+import { normalizeCode, validateCode } from "@/lib/cert-code";
 
 const qo = (id: string) => queryOptions({ queryKey: ["admin", "cert", id], queryFn: () => adminGetCert({ data: { id } }) });
 
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/admin/certificates/$id")({
     const { data } = useSuspenseQuery(qo(id));
     const nav = useNavigate();
     const [pending, setPending] = useState(false);
+    const [code, setCode] = useState(data?.code ?? "");
+    const [codeError, setCodeError] = useState<string | null>(null);
     if (!data) return null;
     const verifyUrl = typeof window !== "undefined" ? `${window.location.origin}/verify/${data.code}` : `/verify/${data.code}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(verifyUrl)}`;
@@ -25,11 +28,18 @@ export const Route = createFileRoute("/_authenticated/admin/certificates/$id")({
       e.preventDefault();
       setPending(true);
       const fd = new FormData(e.currentTarget);
+      const err = validateCode(code);
+      if (err) {
+        setCodeError(err);
+        setPending(false);
+        return;
+      }
+      setCodeError(null);
       try {
         await adminUpsertCert({
           data: {
             id,
-            code: String(fd.get("code") ?? ""),
+            code: normalizeCode(code),
             holder_name: String(fd.get("holder_name") ?? ""),
             rank: String(fd.get("rank") ?? ""),
             style_name: String(fd.get("style_name") ?? "") || null,
@@ -43,7 +53,9 @@ export const Route = createFileRoute("/_authenticated/admin/certificates/$id")({
         toast.success("Saved");
         nav({ to: "/admin/certificates" });
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Save failed");
+        const msg = e instanceof Error ? e.message : "Save failed";
+        if (msg.toLowerCase().includes("code")) setCodeError(msg);
+        toast.error(msg);
       } finally {
         setPending(false);
       }
@@ -52,7 +64,15 @@ export const Route = createFileRoute("/_authenticated/admin/certificates/$id")({
       <AdminPage title={`Certificate ${data.code}`}>
         <div className="grid md:grid-cols-[1fr_240px] gap-6 max-w-3xl">
           <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4">
-            <TextField label="Code" name="code" required defaultValue={data.code} />
+            <TextField
+              label="Code"
+              name="code"
+              required
+              value={code}
+              onChange={(e) => { setCode(e.target.value.toUpperCase()); setCodeError(null); }}
+              error={codeError}
+              hint="Changing the code invalidates previously printed QR codes for this certificate."
+            />
             <TextField label="Holder name" name="holder_name" required defaultValue={data.holder_name} />
             <TextField label="Rank" name="rank" required defaultValue={data.rank} />
             <TextField label="Discipline" name="style_name" defaultValue={data.style_name} />
