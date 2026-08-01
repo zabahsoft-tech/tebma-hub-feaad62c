@@ -25,6 +25,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerifyIndexRouteImport } from './routes/verify.index'
 import { Route as RulesIndexRouteImport } from './routes/rules.index'
+import { Route as DictionaryIndexRouteImport } from './routes/dictionary.index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as StylesSlugRouteImport } from './routes/styles.$slug'
 import { Route as RulesSlugRouteImport } from './routes/rules.$slug'
@@ -149,6 +150,11 @@ const RulesIndexRoute = RulesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => RulesRoute,
+} as any)
+const DictionaryIndexRoute = DictionaryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DictionaryRoute,
 } as any)
 const VerifyCodeRoute = VerifyCodeRouteImport.update({
   id: '/$code',
@@ -430,6 +436,7 @@ export interface FileRoutesByFullPath {
   '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/dictionary/': typeof DictionaryIndexRoute
   '/rules/': typeof RulesIndexRoute
   '/verify/': typeof VerifyIndexRoute
   '/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
@@ -475,7 +482,6 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/dictionary': typeof DictionaryRouteWithChildren
   '/gallery': typeof GalleryRoute
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
@@ -489,6 +495,7 @@ export interface FileRoutesByTo {
   '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/dictionary': typeof DictionaryIndexRoute
   '/rules': typeof RulesIndexRoute
   '/verify': typeof VerifyIndexRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
@@ -545,6 +552,7 @@ export interface FileRoutesById {
   '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/dictionary/': typeof DictionaryIndexRoute
   '/rules/': typeof RulesIndexRoute
   '/verify/': typeof VerifyIndexRoute
   '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
@@ -609,6 +617,7 @@ export interface FileRouteTypes {
     | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/dictionary/'
     | '/rules/'
     | '/verify/'
     | '/admin/categories'
@@ -654,7 +663,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
-    | '/dictionary'
     | '/gallery'
     | '/membership'
     | '/news'
@@ -668,6 +676,7 @@ export interface FileRouteTypes {
     | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/dictionary'
     | '/rules'
     | '/verify'
     | '/admin/contact'
@@ -723,6 +732,7 @@ export interface FileRouteTypes {
     | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/dictionary/'
     | '/rules/'
     | '/verify/'
     | '/_authenticated/admin/categories'
@@ -897,6 +907,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/rules/'
       preLoaderRoute: typeof RulesIndexRouteImport
       parentRoute: typeof RulesRoute
+    }
+    '/dictionary/': {
+      id: '/dictionary/'
+      path: '/'
+      fullPath: '/dictionary/'
+      preLoaderRoute: typeof DictionaryIndexRouteImport
+      parentRoute: typeof DictionaryRoute
     }
     '/verify/$code': {
       id: '/verify/$code'
@@ -1414,10 +1431,12 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface DictionaryRouteChildren {
   DictionarySlugRoute: typeof DictionarySlugRoute
+  DictionaryIndexRoute: typeof DictionaryIndexRoute
 }
 
 const DictionaryRouteChildren: DictionaryRouteChildren = {
   DictionarySlugRoute: DictionarySlugRoute,
+  DictionaryIndexRoute: DictionaryIndexRoute,
 }
 
 const DictionaryRouteWithChildren = DictionaryRoute._addFileChildren(
