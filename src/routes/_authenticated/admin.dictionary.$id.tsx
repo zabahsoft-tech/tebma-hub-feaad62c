@@ -56,6 +56,8 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
           <TextField label="Term" name="term" required defaultValue={data.term} />
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
           <ImageUpload name="image_url" label="Image" defaultValue={data.image_url} folder="dictionary" />
+          <MediaManager name="media" folder="dictionary" defaultValue={(data.media ?? []) as MediaItem[]} />
+
           <TextField label="Tags (comma separated)" name="tags" defaultValue={(data.tags ?? []).join(", ")} />
           <RichEditor name="description" folder="dictionary" defaultValue={data.description} placeholder="Describe the technique, stance, or term." />
           <SaveBar pending={pending} cancelTo="/admin/dictionary" />
