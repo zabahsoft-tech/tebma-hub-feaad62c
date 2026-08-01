@@ -1,33 +1,19 @@
-## Goal
+# Individual pages for each Rules section
 
-Make the admin sign-in keep users logged in across browser restarts, with an explicit "Remember me" choice, plus a few auth-page quality upgrades.
+Today all rules sections render stacked on `/rules` with anchor links. This gives every section its own page with a cover image, excerpt, and rich-text body.
 
 ## What changes
 
-**1. Remember me checkbox on `/auth`**
-- Add a styled checkbox ("Keep me signed in") to the sign-in form, checked by default.
-- Remember the last used email in `localStorage` and pre-fill it on return visits.
-
-**2. Session persistence behavior**
-- Sessions already persist in browser storage and auto-refresh, so a signed-in admin stays signed in indefinitely — that stays the default when the box is checked.
-- When the box is **unchecked**, store a "session-only" flag; on app start, if that flag is set and the browser was fully closed since (detected via a `sessionStorage` marker that dies with the tab), sign the user out before rendering. This gives a true "don't keep me signed in" behavior without touching the generated Supabase client.
-
-**3. Already-signed-in handling**
-- If a signed-in user opens `/auth`, redirect them straight to `/admin` (or the `redirect` search param) instead of showing the form.
-- Show a small "Checking session…" state while that check runs, so no form flash.
-
-**4. Forgot password**
-- Add a "Forgot password?" link on the sign-in tab that sends a reset email.
-- Add a public `/reset-password` route where the user sets a new password, then lands on `/admin`.
-
-**5. Polish**
-- Show/hide password toggle.
-- Clearer inline error messages (invalid credentials vs. unconfirmed email).
-- Disable the form and show a spinner while submitting.
+- `/rules` becomes an index: a card grid of sections (cover image, title, short excerpt) instead of one long document.
+- New `/rules/$slug` page per section: cover image, title, rich-text body, and prev/next links back to the index.
+- Admin (New/Edit rules section) gains a cover image upload and an excerpt field, keeping the existing rich editor for the body.
+- Each rule page gets its own SEO metadata (title, description, og tags, canonical) and Article JSON-LD, and is added to `/sitemap.xml`.
 
 ## Technical notes
 
-- `src/routes/auth.tsx`: add checkbox, remembered-email prefill, password visibility toggle, signed-in redirect via `supabase.auth.getUser()`, and forgot-password flow using `resetPasswordForEmail` with `redirectTo: ${origin}/reset-password`.
-- New `src/lib/auth-persistence.ts`: helpers for the remember flag and the browser-restart detection; called once in `src/routes/__root.tsx` on mount (client-only).
-- New `src/routes/reset-password.tsx`: public route calling `supabase.auth.updateUser({ password })`.
-- No database or server-function changes; the generated Supabase client stays untouched.
+- Migration: add `cover_url text` and `excerpt text` to `public.rules_sections` (nullable, no new policies needed).
+- `src/lib/public.functions.ts`: extend `listRules` select with the new fields; add `getRuleBySlug`.
+- `src/lib/admin.functions.ts`: extend the rules upsert schema/insert with `cover_url` and `excerpt`.
+- New route `src/routes/rules.$slug.tsx`; rewrite `src/routes/rules.tsx` as the index grid (keeps the same URL).
+- Admin forms `admin.rules.new.tsx` / `admin.rules.$id.tsx`: add `ImageUpload` (folder `rules`) and an excerpt `TextField`.
+- Sitemap route: emit one entry per rules slug alongside the existing static `/rules`.
