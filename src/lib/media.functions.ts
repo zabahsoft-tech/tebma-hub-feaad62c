@@ -37,3 +37,29 @@ export const adminUploadMedia = createServerFn({ method: "POST" })
     // Return proxy URL so it survives without signed-URL expiry.
     return { path: key, url: `/api/public/media/${key}` };
   });
+
+const signSchema = z.object({
+  folder: z.string().regex(/^[a-z0-9-]+$/i).max(40),
+  filename: z.string().max(200),
+  contentType: z.string().max(100),
+});
+
+const ALLOWED_VIDEO = new Set(["video/mp4", "video/webm", "video/quicktime", "video/ogg"]);
+
+/** Signed upload URL for large files (video). The browser PUTs directly to storage. */
+export const adminCreateMediaUploadUrl = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => signSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context);
+    if (!ALLOWED_VIDEO.has(data.contentType) && !ALLOWED.has(data.contentType)) {
+      throw new Error("Unsupported file type");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const ext = (data.filename.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const key = `${data.folder}/${crypto.randomUUID()}.${ext || "bin"}`;
+    const { data: signed, error } = await supabaseAdmin.storage.from("media").createSignedUploadUrl(key);
+    if (error) throw error;
+    return { path: key, url: `/api/public/media/${key}`, signedUrl: signed.signedUrl, token: signed.token };
+  });
+
