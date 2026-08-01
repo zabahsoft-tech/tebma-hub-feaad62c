@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
-import { ImageUpload } from "@/components/admin/ImageUpload";
+import { GalleryItemFields } from "@/components/admin/GalleryItemFields";
 import { adminUpsertPhoto } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -17,7 +17,9 @@ export const Route = createFileRoute("/_authenticated/admin/gallery/new")({
       try {
         await adminUpsertPhoto({
           data: {
+            kind: (String(fd.get("kind") ?? "image") as "image" | "embed"),
             url: String(fd.get("url") ?? ""),
+            poster_url: String(fd.get("poster_url") ?? "") || null,
             caption: String(fd.get("caption") ?? "") || null,
             sort_order: Number(fd.get("sort_order") ?? 0),
           },
@@ -31,9 +33,9 @@ export const Route = createFileRoute("/_authenticated/admin/gallery/new")({
       }
     }
     return (
-      <AdminPage title="Add photo">
+      <AdminPage title="Add gallery item">
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-2xl">
-          <ImageUpload name="url" label="Photo" folder="gallery" />
+          <GalleryItemFields />
           <TextField label="Caption" name="caption" />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={0} />
           <SaveBar pending={pending} cancelTo="/admin/gallery" />
