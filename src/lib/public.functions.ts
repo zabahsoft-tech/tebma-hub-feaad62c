@@ -105,12 +105,13 @@ export const listGallery = createServerFn({ method: "GET" }).handler(async () =>
 // ============ DICTIONARY ============
 export const listDictionary = createServerFn({ method: "GET" }).handler(async () => {
   const s = createServerPublicClient();
-  const { data, error } = await s
-    .from("dictionary_entries")
-    .select("id,slug,term,description,image_url,tags")
-    .order("term");
+  const [{ data, error }, { data: media }] = await Promise.all([
+    s.from("dictionary_entries").select("id,slug,term,description,image_url,tags").order("term"),
+    s.from("dictionary_media").select("entry_id,kind"),
+  ]);
   if (error) throw error;
-  return data ?? [];
+  const withVideo = new Set((media ?? []).filter((m) => m.kind !== "image").map((m) => m.entry_id));
+  return (data ?? []).map((e) => ({ ...e, has_video: withVideo.has(e.id) }));
 });
 
 export const getDictionaryBySlug = createServerFn({ method: "GET" })
@@ -123,8 +124,16 @@ export const getDictionaryBySlug = createServerFn({ method: "GET" })
       .eq("slug", data.slug)
       .maybeSingle();
     if (error) throw error;
-    return row;
+    if (!row) return null;
+    const { data: media, error: mErr } = await s
+      .from("dictionary_media")
+      .select("id,kind,url,poster_url,caption,sort_order")
+      .eq("entry_id", row.id)
+      .order("sort_order");
+    if (mErr) throw mErr;
+    return { ...row, media: media ?? [] };
   });
+
 
 // ============ CERTIFICATE VERIFY ============
 export const verifyCertificate = createServerFn({ method: "GET" })
