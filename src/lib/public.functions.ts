@@ -60,12 +60,33 @@ export const listRules = createServerFn({ method: "GET" }).handler(async () => {
   const s = createServerPublicClient();
   const { data, error } = await s
     .from("rules_sections")
-    .select("id,slug,title,body,sort_order")
+    .select("id,slug,title,body,excerpt,cover_url,sort_order")
     .order("sort_order")
     .order("title");
   if (error) throw error;
   return data ?? [];
 });
+
+export const getRuleBySlug = createServerFn({ method: "GET" })
+  .inputValidator((d: { slug: string }) => d)
+  .handler(async ({ data }) => {
+    const s = createServerPublicClient();
+    const { data: rows, error } = await s
+      .from("rules_sections")
+      .select("id,slug,title,body,excerpt,cover_url,sort_order")
+      .order("sort_order")
+      .order("title");
+    if (error) throw error;
+    const list = rows ?? [];
+    const idx = list.findIndex((r) => r.slug === data.slug);
+    if (idx === -1) return null;
+    return {
+      rule: list[idx],
+      prev: idx > 0 ? { slug: list[idx - 1].slug, title: list[idx - 1].title } : null,
+      next: idx < list.length - 1 ? { slug: list[idx + 1].slug, title: list[idx + 1].title } : null,
+    };
+  });
+
 
 // ============ GALLERY ============
 export const listGallery = createServerFn({ method: "GET" }).handler(async () => {
