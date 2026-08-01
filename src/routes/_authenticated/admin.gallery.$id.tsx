@@ -3,7 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
-import { ImageUpload } from "@/components/admin/ImageUpload";
+import { GalleryItemFields } from "@/components/admin/GalleryItemFields";
 import { adminListPhotos, adminUpsertPhoto } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -29,7 +29,9 @@ export const Route = createFileRoute("/_authenticated/admin/gallery/$id")({
         await adminUpsertPhoto({
           data: {
             id,
+            kind: (String(fd.get("kind") ?? "image") as "image" | "embed"),
             url: String(fd.get("url") ?? ""),
+            poster_url: String(fd.get("poster_url") ?? "") || null,
             caption: String(fd.get("caption") ?? "") || null,
             sort_order: Number(fd.get("sort_order") ?? 0),
           },
@@ -43,9 +45,13 @@ export const Route = createFileRoute("/_authenticated/admin/gallery/$id")({
       }
     }
     return (
-      <AdminPage title="Edit photo">
+      <AdminPage title="Edit gallery item">
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-2xl">
-          <ImageUpload name="url" label="Photo" defaultValue={row.url} folder="gallery" />
+          <GalleryItemFields
+            defaultKind={(row.kind as "image" | "embed") ?? "image"}
+            defaultUrl={row.url}
+            defaultPoster={row.poster_url}
+          />
           <TextField label="Caption" name="caption" defaultValue={row.caption} />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={row.sort_order} />
           <SaveBar pending={pending} cancelTo="/admin/gallery" />
