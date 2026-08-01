@@ -84,7 +84,18 @@ function DictDetail() {
             ))}
           </div>
         ) : null}
-        {data.image_url ? <img src={data.image_url} alt={data.term} className="mt-8 w-full rounded-md ring-1 ring-black/5" /> : null}
+        {data.image_url ? (
+          <figure className="mt-8">
+            <img
+              src={data.image_url}
+              alt={(data as { image_caption?: string | null }).image_caption ? `${data.term} — ${(data as { image_caption?: string | null }).image_caption}` : data.term}
+              className="w-full rounded-md ring-1 ring-black/5"
+            />
+            {(data as { image_caption?: string | null }).image_caption ? (
+              <figcaption className="mt-2 text-xs text-muted-foreground">{(data as { image_caption?: string | null }).image_caption}</figcaption>
+            ) : null}
+          </figure>
+        ) : null}
         <div className="prose prose-neutral max-w-none mt-8 text-[15px] leading-relaxed" dangerouslySetInnerHTML={{ __html: data.description }} />
         <MediaGallery items={media} term={data.term} />
       </article>

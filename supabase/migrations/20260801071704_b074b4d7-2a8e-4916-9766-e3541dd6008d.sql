@@ -1,0 +1,1 @@
+ALTER TABLE public.dictionary_entries ADD COLUMN IF NOT EXISTS image_caption text;

@@ -37,6 +37,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
             slug: String(fd.get("slug") ?? ""),
             description: String(fd.get("description") ?? ""),
             image_url: String(fd.get("image_url") ?? "") || null,
+            image_caption: String(fd.get("image_caption") ?? "") || null,
             tags,
             media,
           },
@@ -56,6 +57,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
           <TextField label="Term" name="term" required defaultValue={data.term} />
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
           <ImageUpload name="image_url" label="Image" defaultValue={data.image_url} folder="dictionary" />
+          <TextField label="Main photo caption" name="image_caption" defaultValue={(data as { image_caption?: string | null }).image_caption ?? ""} placeholder="Caption shown under the main photo" />
           <MediaManager name="media" folder="dictionary" defaultValue={(data.media ?? []) as MediaItem[]} />
 
           <TextField label="Tags (comma separated)" name="tags" defaultValue={(data.tags ?? []).join(", ")} />
