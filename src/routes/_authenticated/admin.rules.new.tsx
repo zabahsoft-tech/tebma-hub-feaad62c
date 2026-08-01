@@ -19,10 +19,13 @@ export const Route = createFileRoute("/_authenticated/admin/rules/new")({
           data: {
             title: String(fd.get("title") ?? ""),
             slug: String(fd.get("slug") ?? ""),
+            excerpt: String(fd.get("excerpt") ?? "") || null,
+            cover_url: String(fd.get("cover_url") ?? "") || null,
             body: String(fd.get("body") ?? ""),
             sort_order: Number(fd.get("sort_order") ?? 0),
           },
         });
+
         toast.success("Created");
         nav({ to: "/admin/rules" });
       } catch (e) {

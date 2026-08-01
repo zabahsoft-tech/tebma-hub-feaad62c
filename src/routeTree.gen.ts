@@ -26,6 +26,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RulesIndexRouteImport } from './routes/rules.index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as StylesSlugRouteImport } from './routes/styles.$slug'
+import { Route as RulesSlugRouteImport } from './routes/rules.$slug'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as DictionarySlugRouteImport } from './routes/dictionary.$slug'
@@ -152,6 +153,11 @@ const StylesSlugRoute = StylesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => StylesRoute,
+} as any)
+const RulesSlugRoute = RulesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => RulesRoute,
 } as any)
 const PSlugRoute = PSlugRouteImport.update({
   id: '/p/$slug',
@@ -415,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
+  '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/rules/': typeof RulesIndexRoute
@@ -473,6 +480,7 @@ export interface FileRoutesByTo {
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
+  '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/rules': typeof RulesIndexRoute
@@ -527,6 +535,7 @@ export interface FileRoutesById {
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
+  '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/rules/': typeof RulesIndexRoute
@@ -589,6 +598,7 @@ export interface FileRouteTypes {
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/p/$slug'
+    | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
     | '/rules/'
@@ -647,6 +657,7 @@ export interface FileRouteTypes {
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/p/$slug'
+    | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
     | '/rules'
@@ -700,6 +711,7 @@ export interface FileRouteTypes {
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/p/$slug'
+    | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
     | '/rules/'
@@ -882,6 +894,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/styles/$slug'
       preLoaderRoute: typeof StylesSlugRouteImport
       parentRoute: typeof StylesRoute
+    }
+    '/rules/$slug': {
+      id: '/rules/$slug'
+      path: '/$slug'
+      fullPath: '/rules/$slug'
+      preLoaderRoute: typeof RulesSlugRouteImport
+      parentRoute: typeof RulesRoute
     }
     '/p/$slug': {
       id: '/p/$slug'
@@ -1399,10 +1418,12 @@ const NewsRouteChildren: NewsRouteChildren = {
 const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
 
 interface RulesRouteChildren {
+  RulesSlugRoute: typeof RulesSlugRoute
   RulesIndexRoute: typeof RulesIndexRoute
 }
 
 const RulesRouteChildren: RulesRouteChildren = {
+  RulesSlugRoute: RulesSlugRoute,
   RulesIndexRoute: RulesIndexRoute,
 }
 
