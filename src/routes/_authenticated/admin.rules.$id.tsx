@@ -4,6 +4,8 @@ import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { RichEditor } from "@/components/admin/RichEditor";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+
 import { adminGetRule, adminUpsertRule } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
