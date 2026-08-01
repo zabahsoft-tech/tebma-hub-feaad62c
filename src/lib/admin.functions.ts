@@ -410,8 +410,18 @@ export const adminUpsertCert = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => certSchema.parse(d))
   .handler(async ({ context, data }) => {
     await ensureAdmin(context);
+    const code = data.code.trim().toUpperCase();
+    if (!/^[A-Z0-9-]{4,40}$/.test(code)) {
+      throw new Error("Certificate code must be 4-40 characters using letters, numbers and hyphens.");
+    }
+    {
+      const dupQuery = context.supabase.from("certificates").select("id").eq("code", code).limit(1);
+      const { data: dup, error: dupErr } = data.id ? await dupQuery.neq("id", data.id) : await dupQuery;
+      if (dupErr) throw dupErr;
+      if (dup && dup.length > 0) throw new Error("This code is already used by another certificate.");
+    }
     const payload = {
-      code: data.code.toUpperCase(),
+      code,
       holder_name: data.holder_name,
       rank: data.rank,
       style_name: data.style_name ?? null,
@@ -531,6 +541,9 @@ const contactInfoSchema = z.object({
   youtube: z.string().trim().max(300).optional().nullable(),
   twitter: z.string().trim().max(300).optional().nullable(),
   logo_url: z.string().trim().max(2000).optional().nullable().transform((v) => (v ? v : null)),
+  cert_code_prefix: z.string().trim().max(12).optional().nullable(),
+  cert_code_include_year: z.boolean().optional(),
+  cert_code_random_length: z.coerce.number().int().min(3).max(12).optional(),
 });
 
 export const adminGetContactInfo = createServerFn({ method: "GET" })
@@ -571,6 +584,9 @@ export const adminUpsertContactInfo = createServerFn({ method: "POST" })
       youtube: data.youtube ?? null,
       twitter: data.twitter ?? null,
       logo_url: data.logo_url ?? null,
+      cert_code_prefix: (data.cert_code_prefix ?? "TBM").toUpperCase() || "TBM",
+      cert_code_include_year: data.cert_code_include_year ?? true,
+      cert_code_random_length: data.cert_code_random_length ?? 6,
     };
     const { data: existing, error: readErr } = await context.supabase
       .from("site_contact_info")
