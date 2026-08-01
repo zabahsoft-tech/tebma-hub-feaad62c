@@ -3,7 +3,9 @@ import { queryOptions, useSuspenseQuery, useQueryClient } from "@tanstack/react-
 import { AdminPage } from "@/components/admin/AdminShell";
 import { DataTable } from "@/components/admin/AdminForm";
 import { adminListPhotos, adminDeletePhoto } from "@/lib/admin.functions";
-import { Plus } from "lucide-react";
+import { Plus, Film } from "lucide-react";
+import { embedThumbnail } from "@/lib/embed";
+
 
 const qo = queryOptions({ queryKey: ["admin", "photos"], queryFn: () => adminListPhotos() });
 
