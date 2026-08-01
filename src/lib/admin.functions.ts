@@ -305,7 +305,9 @@ export const adminDeleteDictionary = createServerFn({ method: "POST" })
 const photoSchema = z.object({
   id: z.string().uuid().optional(),
   album_id: z.string().uuid().optional().nullable(),
-  url: z.string().url(),
+  kind: z.enum(["image", "embed"]).default("image"),
+  url: z.string().trim().min(1).max(2000),
+  poster_url: z.string().trim().max(2000).optional().nullable(),
   caption: z.string().trim().max(300).optional().nullable(),
   sort_order: z.coerce.number().int().default(0),
 });
@@ -324,9 +326,17 @@ export const adminUpsertPhoto = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => photoSchema.parse(d))
   .handler(async ({ context, data }) => {
     await ensureAdmin(context);
+    let url = data.url;
+    if (data.kind === "embed") {
+      const embed = toEmbedUrl(url);
+      if (!embed) throw new Error("Enter a valid YouTube or Vimeo link");
+      url = embed;
+    }
     const payload = {
       album_id: data.album_id ?? null,
-      url: data.url,
+      kind: data.kind,
+      url,
+      poster_url: data.poster_url || null,
       caption: data.caption ?? null,
       sort_order: data.sort_order,
     };
@@ -339,6 +349,7 @@ export const adminUpsertPhoto = createServerFn({ method: "POST" })
     if (error) throw error;
     return { id: row.id };
   });
+
 
 export const adminDeletePhoto = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
