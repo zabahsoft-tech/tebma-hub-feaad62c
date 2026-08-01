@@ -20,6 +20,7 @@ export function TextField({
   type = "text",
   required,
   defaultValue,
+  value,
   placeholder,
   maxLength,
   onChange,
@@ -31,6 +32,7 @@ export function TextField({
   type?: string;
   required?: boolean;
   defaultValue?: string | number | null;
+  value?: string | number;
   placeholder?: string;
   maxLength?: number;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -44,7 +46,7 @@ export function TextField({
         name={name}
         type={type}
         required={required}
-        defaultValue={defaultValue ?? undefined}
+        {...(value !== undefined ? { value } : { defaultValue: defaultValue ?? undefined })}
         placeholder={placeholder}
         maxLength={maxLength}
         onChange={onChange}

@@ -475,6 +475,9 @@ export type Database = {
         Row: {
           americas_office: string | null
           asia_office: string | null
+          cert_code_include_year: boolean
+          cert_code_prefix: string | null
+          cert_code_random_length: number
           contact_intro: string | null
           created_at: string
           facebook: string | null
@@ -498,6 +501,9 @@ export type Database = {
         Insert: {
           americas_office?: string | null
           asia_office?: string | null
+          cert_code_include_year?: boolean
+          cert_code_prefix?: string | null
+          cert_code_random_length?: number
           contact_intro?: string | null
           created_at?: string
           facebook?: string | null
@@ -521,6 +527,9 @@ export type Database = {
         Update: {
           americas_office?: string | null
           asia_office?: string | null
+          cert_code_include_year?: boolean
+          cert_code_prefix?: string | null
+          cert_code_random_length?: number
           contact_intro?: string | null
           created_at?: string
           facebook?: string | null

@@ -19,6 +19,29 @@ export const Route = createFileRoute("/verify/$code")({
     links: [{ rel: "canonical", href: `/verify/${params.code}` }],
   }),
   component: VerifyResult,
+  pendingComponent: () => (
+    <PageShell>
+      <section className="max-w-2xl mx-auto px-6 py-20">
+        <div className="border border-border rounded-md p-10 text-center text-sm text-muted-foreground">
+          Checking the federation registry…
+        </div>
+      </section>
+    </PageShell>
+  ),
+  errorComponent: () => (
+    <PageShell>
+      <section className="max-w-2xl mx-auto px-6 py-20 text-center">
+        <XCircle className="size-8 text-destructive mx-auto" />
+        <h1 className="mt-4 text-2xl font-medium tracking-tight">Verification unavailable</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          We couldn't reach the certificate registry. Please try again in a moment.
+        </p>
+        <Link to="/verify" className="mt-6 inline-block border border-border rounded-sm px-4 py-2.5 text-sm hover:bg-accent">
+          Back to verification
+        </Link>
+      </section>
+    </PageShell>
+  ),
 });
 
 function VerifyResult() {
