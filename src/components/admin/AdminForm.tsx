@@ -23,6 +23,8 @@ export function TextField({
   placeholder,
   maxLength,
   onChange,
+  error,
+  hint,
 }: {
   label: string;
   name: string;
@@ -32,6 +34,8 @@ export function TextField({
   placeholder?: string;
   maxLength?: number;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  error?: string | null;
+  hint?: string;
 }) {
   return (
     <label className="block text-sm">
@@ -44,11 +48,20 @@ export function TextField({
         placeholder={placeholder}
         maxLength={maxLength}
         onChange={onChange}
-        className="w-full py-2 px-3 bg-background border border-border rounded-sm focus:outline-none focus:ring-1 focus:ring-foreground/30"
+        aria-invalid={error ? true : undefined}
+        className={`w-full py-2 px-3 bg-background border rounded-sm focus:outline-none focus:ring-1 ${
+          error ? "border-destructive focus:ring-destructive/40" : "border-border focus:ring-foreground/30"
+        }`}
       />
+      {error ? (
+        <span className="mt-1 block text-xs text-destructive">{error}</span>
+      ) : hint ? (
+        <span className="mt-1 block text-xs text-muted-foreground">{hint}</span>
+      ) : null}
     </label>
   );
 }
+
 
 export function TextArea({
   label,

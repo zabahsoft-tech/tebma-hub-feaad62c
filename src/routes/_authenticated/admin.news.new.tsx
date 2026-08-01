@@ -5,56 +5,49 @@ import { TextField, CheckField, SaveBar } from "@/components/admin/AdminForm";
 import { RichEditor } from "@/components/admin/RichEditor";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminUpsertNews } from "@/lib/admin.functions";
+import { readNewsForm, slugify, validateNews, type NewsFormErrors } from "@/lib/news-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/news/new")({
   component: NewNews,
 });
 
-function slugify(s: string) {
-  return s
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 120);
-}
-
 function NewNews() {
   const nav = useNavigate();
   const [pending, setPending] = useState(false);
   const [slugDirty, setSlugDirty] = useState(false);
+  const [errors, setErrors] = useState<NewsFormErrors>({});
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const values = readNewsForm(new FormData(e.currentTarget));
+    const found = validateNews(values);
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      toast.error("Please fix the highlighted fields.");
+      return;
+    }
     setPending(true);
-    const fd = new FormData(e.currentTarget);
     try {
-      await adminUpsertNews({
-        data: {
-          slug: String(fd.get("slug") ?? ""),
-          title: String(fd.get("title") ?? ""),
-          excerpt: String(fd.get("excerpt") ?? "") || null,
-          body: String(fd.get("body") ?? ""),
-          cover_url: String(fd.get("cover_url") ?? "") || null,
-          published: fd.get("published") === "on",
-        },
-      });
+      await adminUpsertNews({ data: values });
       toast.success("Article created");
       nav({ to: "/admin/news" });
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Save failed");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Save failed";
+      if (/slug/i.test(message)) setErrors({ slug: message });
+      toast.error(message);
     } finally {
       setPending(false);
     }
   }
+
   return (
     <AdminPage title="New article" description="Compose a federation dispatch with rich formatting and inline images.">
-      <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-6 max-w-4xl">
+      <form onSubmit={onSubmit} noValidate className="bg-background border border-border rounded-md p-6 space-y-6 max-w-4xl">
         <TextField
           label="Title"
           name="title"
-          required
+          error={errors.title}
           onChange={(e) => {
             if (!slugDirty) {
               const slug = slugify(e.currentTarget.value);
@@ -66,8 +59,9 @@ function NewNews() {
         <TextField
           label="URL slug"
           name="slug"
-          required
           placeholder="new-year-championship-2026"
+          hint="Lowercase letters, numbers and hyphens. Must be unique."
+          error={errors.slug}
           onChange={() => setSlugDirty(true)}
         />
         <ImageUpload name="cover_url" folder="news" />
@@ -75,9 +69,13 @@ function NewNews() {
           label="Excerpt (SEO description, 50–160 chars ideal)"
           name="excerpt"
           maxLength={300}
+          error={errors.excerpt}
           placeholder="One-sentence summary that appears in search results and social cards."
         />
-        <RichEditor name="body" folder="news" placeholder="Write the full article. Use headings, lists, links, and images." />
+        <div>
+          <RichEditor name="body" folder="news" placeholder="Write the full article. Use headings, lists, links, and images." />
+          {errors.body ? <p className="mt-1 text-xs text-destructive">{errors.body}</p> : null}
+        </div>
         <CheckField label="Publish immediately" name="published" defaultChecked />
         <SaveBar pending={pending} cancelTo="/admin/news" />
       </form>

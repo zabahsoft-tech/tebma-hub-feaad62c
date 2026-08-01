@@ -6,6 +6,7 @@ import { TextField, CheckField, SaveBar } from "@/components/admin/AdminForm";
 import { RichEditor } from "@/components/admin/RichEditor";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminGetNews, adminUpsertNews } from "@/lib/admin.functions";
+import { readNewsForm, validateNews, type NewsFormErrors } from "@/lib/news-form";
 import { toast } from "sonner";
 
 const qo = (id: string) => queryOptions({ queryKey: ["admin", "news", id], queryFn: () => adminGetNews({ data: { id } }) });
@@ -23,39 +24,55 @@ function EditNews() {
   const { data } = useSuspenseQuery(qo(id));
   const nav = useNavigate();
   const [pending, setPending] = useState(false);
+  const [errors, setErrors] = useState<NewsFormErrors>({});
   if (!data) return null;
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const values = readNewsForm(new FormData(e.currentTarget));
+    const found = validateNews(values);
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      toast.error("Please fix the highlighted fields.");
+      return;
+    }
     setPending(true);
-    const fd = new FormData(e.currentTarget);
     try {
-      await adminUpsertNews({
-        data: {
-          id,
-          slug: String(fd.get("slug") ?? ""),
-          title: String(fd.get("title") ?? ""),
-          excerpt: String(fd.get("excerpt") ?? "") || null,
-          body: String(fd.get("body") ?? ""),
-          cover_url: String(fd.get("cover_url") ?? "") || null,
-          published: fd.get("published") === "on",
-        },
-      });
+      await adminUpsertNews({ data: { id, ...values } });
       toast.success("Saved");
       nav({ to: "/admin/news" });
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Save failed");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Save failed";
+      if (/slug/i.test(message)) setErrors({ slug: message });
+      toast.error(message);
     } finally {
       setPending(false);
     }
   }
+
   return (
     <AdminPage title="Edit article">
-      <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-6 max-w-4xl">
-        <TextField label="Title" name="title" required defaultValue={data.title} />
-        <TextField label="URL slug" name="slug" required defaultValue={data.slug} />
+      <form onSubmit={onSubmit} noValidate className="bg-background border border-border rounded-md p-6 space-y-6 max-w-4xl">
+        <TextField label="Title" name="title" defaultValue={data.title} error={errors.title} />
+        <TextField
+          label="URL slug"
+          name="slug"
+          defaultValue={data.slug}
+          hint="Lowercase letters, numbers and hyphens. Must be unique."
+          error={errors.slug}
+        />
         <ImageUpload name="cover_url" defaultValue={data.cover_url} folder="news" />
-        <TextField label="Excerpt (SEO description, 50–160 chars ideal)" name="excerpt" maxLength={300} defaultValue={data.excerpt} />
-        <RichEditor name="body" defaultValue={data.body} folder="news" />
+        <TextField
+          label="Excerpt (SEO description, 50–160 chars ideal)"
+          name="excerpt"
+          maxLength={300}
+          defaultValue={data.excerpt}
+          error={errors.excerpt}
+        />
+        <div>
+          <RichEditor name="body" defaultValue={data.body} folder="news" />
+          {errors.body ? <p className="mt-1 text-xs text-destructive">{errors.body}</p> : null}
+        </div>
         <CheckField label="Published" name="published" defaultChecked={data.published} />
         <SaveBar pending={pending} cancelTo="/admin/news" />
       </form>

@@ -59,6 +59,11 @@ export const adminUpsertNews = createServerFn({ method: "POST" })
       published: data.published,
       published_at: data.published ? data.published_at ?? new Date().toISOString() : null,
     };
+    // Friendly message instead of a raw unique-constraint error.
+    const dupe = await context.supabase.from("news_articles").select("id").eq("slug", data.slug).maybeSingle();
+    if (dupe.data && dupe.data.id !== data.id) {
+      throw new Error(`The slug "${data.slug}" is already used by another article. Choose a different slug.`);
+    }
     if (data.id) {
       const { error } = await context.supabase.from("news_articles").update(payload).eq("id", data.id);
       if (error) throw error;
@@ -69,6 +74,7 @@ export const adminUpsertNews = createServerFn({ method: "POST" })
       return { id: row.id };
     }
   });
+
 
 export const adminDeleteNews = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
