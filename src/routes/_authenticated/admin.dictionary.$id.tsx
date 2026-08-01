@@ -28,6 +28,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
       setPending(true);
       const fd = new FormData(e.currentTarget);
       const tags = String(fd.get("tags") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+      const media = JSON.parse(String(fd.get("media") ?? "[]")) as MediaItem[];
       try {
         await adminUpsertDictionary({
           data: {
@@ -37,8 +38,10 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
             description: String(fd.get("description") ?? ""),
             image_url: String(fd.get("image_url") ?? "") || null,
             tags,
+            media,
           },
         });
+
         toast.success("Saved");
         nav({ to: "/admin/dictionary" });
       } catch (e) {
