@@ -25,6 +25,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/new")({
             slug: String(fd.get("slug") ?? ""),
             description: String(fd.get("description") ?? ""),
             image_url: String(fd.get("image_url") ?? "") || null,
+            image_caption: String(fd.get("image_caption") ?? "") || null,
             tags,
             media,
           },
@@ -43,6 +44,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/new")({
           <TextField label="Term" name="term" required />
           <TextField label="Slug" name="slug" required />
           <ImageUpload name="image_url" label="Cover image" folder="dictionary" />
+          <TextField label="Main photo caption" name="image_caption" placeholder="Caption shown under the main photo" />
           <MediaManager name="media" folder="dictionary" />
           <TextField label="Tags (comma separated)" name="tags" placeholder="stance, defense, beginner" />
           <RichEditor name="description" folder="dictionary" placeholder="Describe the technique, stance, or term." />

@@ -228,6 +228,7 @@ const dictSchema = z.object({
   term: z.string().trim().min(1).max(200),
   description: z.string().max(20000).default(""),
   image_url: z.string().trim().max(2000).optional().nullable(),
+  image_caption: z.string().trim().max(300).optional().nullable(),
   tags: z.array(z.string().trim().min(1).max(60)).default([]),
   media: z.array(dictMediaSchema).max(60).default([]),
 });
@@ -269,6 +270,7 @@ export const adminUpsertDictionary = createServerFn({ method: "POST" })
       term: data.term,
       description: data.description ?? "",
       image_url: data.image_url ?? null,
+      image_caption: data.image_caption || null,
       tags: data.tags,
     };
     let entryId = data.id;

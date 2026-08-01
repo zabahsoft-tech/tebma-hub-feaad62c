@@ -107,7 +107,7 @@ export const listGallery = createServerFn({ method: "GET" }).handler(async () =>
 export const listDictionary = createServerFn({ method: "GET" }).handler(async () => {
   const s = createServerPublicClient();
   const [{ data, error }, { data: media }] = await Promise.all([
-    s.from("dictionary_entries").select("id,slug,term,description,image_url,tags").order("term"),
+    s.from("dictionary_entries").select("id,slug,term,description,image_url,image_caption,tags").order("term"),
     s.from("dictionary_media").select("entry_id,kind"),
   ]);
   if (error) throw error;
@@ -121,7 +121,7 @@ export const getDictionaryBySlug = createServerFn({ method: "GET" })
     const s = createServerPublicClient();
     const { data: row, error } = await s
       .from("dictionary_entries")
-      .select("id,slug,term,description,image_url,tags")
+      .select("id,slug,term,description,image_url,image_caption,tags")
       .eq("slug", data.slug)
       .maybeSingle();
     if (error) throw error;
