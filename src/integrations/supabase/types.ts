@@ -475,6 +475,7 @@ export type Database = {
         Row: {
           americas_office: string | null
           asia_office: string | null
+          contact_intro: string | null
           created_at: string
           facebook: string | null
           general_email: string | null
@@ -482,8 +483,13 @@ export type Database = {
           id: string
           instagram: string | null
           logo_url: string | null
+          map_embed_url: string | null
           media_email: string | null
+          office_hours: string | null
           phone: string | null
+          site_short_title: string | null
+          site_title: string | null
+          tagline: string | null
           twitter: string | null
           updated_at: string
           website: string | null
@@ -492,6 +498,7 @@ export type Database = {
         Insert: {
           americas_office?: string | null
           asia_office?: string | null
+          contact_intro?: string | null
           created_at?: string
           facebook?: string | null
           general_email?: string | null
@@ -499,8 +506,13 @@ export type Database = {
           id?: string
           instagram?: string | null
           logo_url?: string | null
+          map_embed_url?: string | null
           media_email?: string | null
+          office_hours?: string | null
           phone?: string | null
+          site_short_title?: string | null
+          site_title?: string | null
+          tagline?: string | null
           twitter?: string | null
           updated_at?: string
           website?: string | null
@@ -509,6 +521,7 @@ export type Database = {
         Update: {
           americas_office?: string | null
           asia_office?: string | null
+          contact_intro?: string | null
           created_at?: string
           facebook?: string | null
           general_email?: string | null
@@ -516,8 +529,13 @@ export type Database = {
           id?: string
           instagram?: string | null
           logo_url?: string | null
+          map_embed_url?: string | null
           media_email?: string | null
+          office_hours?: string | null
           phone?: string | null
+          site_short_title?: string | null
+          site_title?: string | null
+          tagline?: string | null
           twitter?: string | null
           updated_at?: string
           website?: string | null
