@@ -3,6 +3,9 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { PageShell, PageHeader } from "@/components/site/PageShell";
 import { listGallery } from "@/lib/public.functions";
+import { embedThumbnail } from "@/lib/embed";
+import { Film, Play, X } from "lucide-react";
+
 
 const qo = queryOptions({ queryKey: ["gallery"], queryFn: () => listGallery() });
 
