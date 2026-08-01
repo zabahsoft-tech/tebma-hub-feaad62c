@@ -97,10 +97,20 @@ export function SiteFooter() {
           <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
             &copy; {new Date().getFullYear()} {siteShort}
           </span>
-          <div className="flex gap-6">
-            <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Brussels</span>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Tokyo</span>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-widest">New York</span>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+            <div className="flex gap-6">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Brussels</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Tokyo</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">New York</span>
+            </div>
+            <a
+              href="https://zsoft.af"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+            >
+              dev by zsoft.af
+            </a>
           </div>
         </div>
       </div>
