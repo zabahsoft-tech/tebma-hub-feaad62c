@@ -207,14 +207,23 @@ export const adminDeleteRule = createServerFn({ method: "POST" })
   });
 
 // ---------- Dictionary ----------
+const dictMediaSchema = z.object({
+  kind: z.enum(["image", "video", "embed"]),
+  url: z.string().trim().min(1).max(2000),
+  poster_url: z.string().trim().max(2000).optional().nullable(),
+  caption: z.string().trim().max(300).optional().nullable(),
+});
+
 const dictSchema = z.object({
   id: z.string().uuid().optional(),
   slug: z.string().trim().min(1).max(120),
   term: z.string().trim().min(1).max(200),
   description: z.string().max(20000).default(""),
-  image_url: z.string().url().optional().nullable(),
+  image_url: z.string().trim().max(2000).optional().nullable(),
   tags: z.array(z.string().trim().min(1).max(60)).default([]),
+  media: z.array(dictMediaSchema).max(60).default([]),
 });
+
 
 export const adminListDictionary = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -232,7 +241,14 @@ export const adminGetDictionary = createServerFn({ method: "GET" })
     await ensureAdmin(context);
     const { data: row, error } = await context.supabase.from("dictionary_entries").select("*").eq("id", data.id).maybeSingle();
     if (error) throw error;
-    return row;
+    if (!row) return null;
+    const { data: media, error: mErr } = await context.supabase
+      .from("dictionary_media")
+      .select("id,kind,url,poster_url,caption,sort_order")
+      .eq("entry_id", data.id)
+      .order("sort_order");
+    if (mErr) throw mErr;
+    return { ...row, media: media ?? [] };
   });
 
 export const adminUpsertDictionary = createServerFn({ method: "POST" })
@@ -247,15 +263,33 @@ export const adminUpsertDictionary = createServerFn({ method: "POST" })
       image_url: data.image_url ?? null,
       tags: data.tags,
     };
-    if (data.id) {
-      const { error } = await context.supabase.from("dictionary_entries").update(payload).eq("id", data.id);
+    let entryId = data.id;
+    if (entryId) {
+      const { error } = await context.supabase.from("dictionary_entries").update(payload).eq("id", entryId);
       if (error) throw error;
-      return { id: data.id };
+    } else {
+      const { data: row, error } = await context.supabase.from("dictionary_entries").insert(payload).select("id").single();
+      if (error) throw error;
+      entryId = row.id;
     }
-    const { data: row, error } = await context.supabase.from("dictionary_entries").insert(payload).select("id").single();
-    if (error) throw error;
-    return { id: row.id };
+
+    const { error: delErr } = await context.supabase.from("dictionary_media").delete().eq("entry_id", entryId);
+    if (delErr) throw delErr;
+    if (data.media.length) {
+      const rows = data.media.map((m, i) => ({
+        entry_id: entryId,
+        kind: m.kind,
+        url: m.url,
+        poster_url: m.poster_url || null,
+        caption: m.caption || null,
+        sort_order: i,
+      }));
+      const { error: insErr } = await context.supabase.from("dictionary_media").insert(rows);
+      if (insErr) throw insErr;
+    }
+    return { id: entryId };
   });
+
 
 export const adminDeleteDictionary = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

@@ -4,8 +4,10 @@ import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { MediaManager, type MediaItem } from "@/components/admin/MediaManager";
 import { RichEditor } from "@/components/admin/RichEditor";
 import { adminGetDictionary, adminUpsertDictionary } from "@/lib/admin.functions";
+
 import { toast } from "sonner";
 
 const qo = (id: string) => queryOptions({ queryKey: ["admin", "dict", id], queryFn: () => adminGetDictionary({ data: { id } }) });
@@ -26,6 +28,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
       setPending(true);
       const fd = new FormData(e.currentTarget);
       const tags = String(fd.get("tags") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+      const media = JSON.parse(String(fd.get("media") ?? "[]")) as MediaItem[];
       try {
         await adminUpsertDictionary({
           data: {
@@ -35,8 +38,10 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
             description: String(fd.get("description") ?? ""),
             image_url: String(fd.get("image_url") ?? "") || null,
             tags,
+            media,
           },
         });
+
         toast.success("Saved");
         nav({ to: "/admin/dictionary" });
       } catch (e) {
@@ -51,6 +56,8 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/$id")({
           <TextField label="Term" name="term" required defaultValue={data.term} />
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
           <ImageUpload name="image_url" label="Image" defaultValue={data.image_url} folder="dictionary" />
+          <MediaManager name="media" folder="dictionary" defaultValue={(data.media ?? []) as MediaItem[]} />
+
           <TextField label="Tags (comma separated)" name="tags" defaultValue={(data.tags ?? []).join(", ")} />
           <RichEditor name="description" folder="dictionary" defaultValue={data.description} placeholder="Describe the technique, stance, or term." />
           <SaveBar pending={pending} cancelTo="/admin/dictionary" />

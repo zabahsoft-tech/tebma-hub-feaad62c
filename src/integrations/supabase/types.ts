@@ -144,6 +144,47 @@ export type Database = {
           },
         ]
       }
+      dictionary_media: {
+        Row: {
+          caption: string | null
+          created_at: string
+          entry_id: string
+          id: string
+          kind: Database["public"]["Enums"]["dictionary_media_kind"]
+          poster_url: string | null
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          entry_id: string
+          id?: string
+          kind?: Database["public"]["Enums"]["dictionary_media_kind"]
+          poster_url?: string | null
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          entry_id?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["dictionary_media_kind"]
+          poster_url?: string | null
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dictionary_media_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "dictionary_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gallery_albums: {
         Row: {
           cover_url: string | null
@@ -561,6 +602,7 @@ export type Database = {
     Enums: {
       app_role: "admin"
       certificate_status: "active" | "revoked" | "expired"
+      dictionary_media_kind: "image" | "video" | "embed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -690,6 +732,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin"],
       certificate_status: ["active", "revoked", "expired"],
+      dictionary_media_kind: ["image", "video", "embed"],
     },
   },
 } as const
