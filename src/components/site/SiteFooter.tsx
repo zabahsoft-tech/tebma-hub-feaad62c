@@ -12,12 +12,17 @@ export function SiteFooter() {
   });
   const info = data as {
     logo_url?: string | null;
+    site_short_title?: string | null;
+    site_title?: string | null;
+    tagline?: string | null;
     facebook?: string | null;
     instagram?: string | null;
     youtube?: string | null;
     twitter?: string | null;
   } | null;
   const logoUrl = info?.logo_url ?? null;
+  const siteShort = info?.site_short_title?.trim() || info?.site_title?.trim() || SITE_SHORT;
+  const tagline = info?.tagline?.trim() || null;
   const socials = [
     { label: "Facebook", href: info?.facebook, Icon: Facebook },
     { label: "Instagram", href: info?.instagram, Icon: Instagram },
@@ -32,14 +37,14 @@ export function SiteFooter() {
           <div className="flex flex-col gap-6 max-w-sm">
             <div className="flex items-center gap-2">
               {logoUrl ? (
-                <img src={logoUrl} alt={`${SITE_SHORT} logo`} className="h-6 w-auto object-contain" />
+                <img src={logoUrl} alt={`${siteShort} logo`} className="h-6 w-auto object-contain" />
               ) : (
                 <div className="size-6 bg-foreground rounded-xs" />
               )}
-              <span className="text-xs font-semibold uppercase tracking-widest">{SITE_SHORT}</span>
+              <span className="text-xs font-semibold uppercase tracking-widest">{siteShort}</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Official technical authority and regulatory body for traditional martial arts systems globally.
+              {tagline ?? "Official technical authority and regulatory body for traditional martial arts systems globally."}
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-12">
@@ -90,7 +95,7 @@ export function SiteFooter() {
 
         <div className="mt-16 pt-8 border-t border-border/60 flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
-            &copy; {new Date().getFullYear()} {SITE_SHORT}
+            &copy; {new Date().getFullYear()} {siteShort}
           </span>
           <div className="flex gap-6">
             <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Brussels</span>
