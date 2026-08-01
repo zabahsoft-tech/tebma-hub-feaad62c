@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ArrowDown, ArrowUp, Film, ImagePlus, Link2, Upload, X } from "lucide-react";
 import { uploadMediaFile, uploadLargeMediaFile } from "@/lib/media-client";
+import { toEmbedUrl } from "@/lib/embed";
 
 export type MediaItem = {
   kind: "image" | "video" | "embed";
@@ -10,14 +11,6 @@ export type MediaItem = {
   caption?: string | null;
 };
 
-export function toEmbedUrl(raw: string): string | null {
-  const url = raw.trim();
-  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
-  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}`;
-  const vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
-  return null;
-}
 
 export function MediaManager({
   name,
