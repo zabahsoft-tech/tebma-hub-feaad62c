@@ -146,9 +146,12 @@ const ruleSchema = z.object({
   id: z.string().uuid().optional(),
   slug: z.string().trim().min(1).max(120),
   title: z.string().trim().min(1).max(200),
+  excerpt: z.string().trim().max(500).optional().nullable(),
+  cover_url: z.string().trim().max(2000).optional().nullable(),
   body: z.string().max(50000).default(""),
   sort_order: z.coerce.number().int().default(0),
 });
+
 
 export const adminListRules = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -174,7 +177,15 @@ export const adminUpsertRule = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => ruleSchema.parse(d))
   .handler(async ({ context, data }) => {
     await ensureAdmin(context);
-    const payload = { slug: data.slug, title: data.title, body: data.body ?? "", sort_order: data.sort_order };
+    const payload = {
+      slug: data.slug,
+      title: data.title,
+      body: data.body ?? "",
+      excerpt: data.excerpt || null,
+      cover_url: data.cover_url || null,
+      sort_order: data.sort_order,
+    };
+
     if (data.id) {
       const { error } = await context.supabase.from("rules_sections").update(payload).eq("id", data.id);
       if (error) throw error;

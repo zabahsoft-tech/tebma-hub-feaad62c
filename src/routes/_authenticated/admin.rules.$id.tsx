@@ -4,6 +4,8 @@ import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { RichEditor } from "@/components/admin/RichEditor";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+
 import { adminGetRule, adminUpsertRule } from "@/lib/admin.functions";
 import { toast } from "sonner";
 
@@ -30,10 +32,13 @@ export const Route = createFileRoute("/_authenticated/admin/rules/$id")({
             id,
             title: String(fd.get("title") ?? ""),
             slug: String(fd.get("slug") ?? ""),
+            excerpt: String(fd.get("excerpt") ?? "") || null,
+            cover_url: String(fd.get("cover_url") ?? "") || null,
             body: String(fd.get("body") ?? ""),
             sort_order: Number(fd.get("sort_order") ?? 0),
           },
         });
+
         toast.success("Saved");
         nav({ to: "/admin/rules" });
       } catch (e) {
@@ -47,7 +52,10 @@ export const Route = createFileRoute("/_authenticated/admin/rules/$id")({
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-3xl">
           <TextField label="Title" name="title" required defaultValue={data.title} />
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
+          <ImageUpload name="cover_url" folder="rules" defaultValue={data.cover_url} />
+          <TextField label="Excerpt (short summary shown in the listing)" name="excerpt" maxLength={300} defaultValue={data.excerpt} />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={data.sort_order} />
+
           <RichEditor name="body" folder="rules" defaultValue={data.body} placeholder="Write the rules section. Use headings, lists, and links." />
           <SaveBar pending={pending} cancelTo="/admin/rules" />
         </form>

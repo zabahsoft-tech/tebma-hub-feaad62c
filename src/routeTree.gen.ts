@@ -23,8 +23,10 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RulesIndexRouteImport } from './routes/rules.index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as StylesSlugRouteImport } from './routes/styles.$slug'
+import { Route as RulesSlugRouteImport } from './routes/rules.$slug'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as DictionarySlugRouteImport } from './routes/dictionary.$slug'
@@ -137,6 +139,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RulesIndexRoute = RulesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RulesRoute,
+} as any)
 const VerifyCodeRoute = VerifyCodeRouteImport.update({
   id: '/$code',
   path: '/$code',
@@ -146,6 +153,11 @@ const StylesSlugRoute = StylesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => StylesRoute,
+} as any)
+const RulesSlugRoute = RulesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => RulesRoute,
 } as any)
 const PSlugRoute = PSlugRouteImport.update({
   id: '/p/$slug',
@@ -400,7 +412,7 @@ export interface FileRoutesByFullPath {
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/rules': typeof RulesRoute
+  '/rules': typeof RulesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
   '/verify': typeof VerifyRouteWithChildren
@@ -409,8 +421,10 @@ export interface FileRoutesByFullPath {
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
+  '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/rules/': typeof RulesIndexRoute
   '/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/admin/contact': typeof AuthenticatedAdminContactRoute
@@ -459,7 +473,6 @@ export interface FileRoutesByTo {
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/rules': typeof RulesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
   '/verify': typeof VerifyRouteWithChildren
@@ -467,8 +480,10 @@ export interface FileRoutesByTo {
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
+  '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/rules': typeof RulesIndexRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
@@ -511,7 +526,7 @@ export interface FileRoutesById {
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/rules': typeof RulesRoute
+  '/rules': typeof RulesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
   '/verify': typeof VerifyRouteWithChildren
@@ -520,8 +535,10 @@ export interface FileRoutesById {
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
+  '/rules/$slug': typeof RulesSlugRoute
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
+  '/rules/': typeof RulesIndexRoute
   '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
@@ -581,8 +598,10 @@ export interface FileRouteTypes {
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/p/$slug'
+    | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/rules/'
     | '/admin/categories'
     | '/admin/certificates'
     | '/admin/contact'
@@ -631,7 +650,6 @@ export interface FileRouteTypes {
     | '/membership'
     | '/news'
     | '/reset-password'
-    | '/rules'
     | '/sitemap.xml'
     | '/styles'
     | '/verify'
@@ -639,8 +657,10 @@ export interface FileRouteTypes {
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/p/$slug'
+    | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/rules'
     | '/admin/contact'
     | '/admin/memberships'
     | '/admin/messages'
@@ -691,8 +711,10 @@ export interface FileRouteTypes {
     | '/dictionary/$slug'
     | '/news/$slug'
     | '/p/$slug'
+    | '/rules/$slug'
     | '/styles/$slug'
     | '/verify/$code'
+    | '/rules/'
     | '/_authenticated/admin/categories'
     | '/_authenticated/admin/certificates'
     | '/_authenticated/admin/contact'
@@ -743,7 +765,7 @@ export interface RootRouteChildren {
   MembershipRoute: typeof MembershipRoute
   NewsRoute: typeof NewsRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
-  RulesRoute: typeof RulesRoute
+  RulesRoute: typeof RulesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StylesRoute: typeof StylesRouteWithChildren
   VerifyRoute: typeof VerifyRouteWithChildren
@@ -852,6 +874,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rules/': {
+      id: '/rules/'
+      path: '/'
+      fullPath: '/rules/'
+      preLoaderRoute: typeof RulesIndexRouteImport
+      parentRoute: typeof RulesRoute
+    }
     '/verify/$code': {
       id: '/verify/$code'
       path: '/$code'
@@ -865,6 +894,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/styles/$slug'
       preLoaderRoute: typeof StylesSlugRouteImport
       parentRoute: typeof StylesRoute
+    }
+    '/rules/$slug': {
+      id: '/rules/$slug'
+      path: '/$slug'
+      fullPath: '/rules/$slug'
+      preLoaderRoute: typeof RulesSlugRouteImport
+      parentRoute: typeof RulesRoute
     }
     '/p/$slug': {
       id: '/p/$slug'
@@ -1381,6 +1417,18 @@ const NewsRouteChildren: NewsRouteChildren = {
 
 const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
 
+interface RulesRouteChildren {
+  RulesSlugRoute: typeof RulesSlugRoute
+  RulesIndexRoute: typeof RulesIndexRoute
+}
+
+const RulesRouteChildren: RulesRouteChildren = {
+  RulesSlugRoute: RulesSlugRoute,
+  RulesIndexRoute: RulesIndexRoute,
+}
+
+const RulesRouteWithChildren = RulesRoute._addFileChildren(RulesRouteChildren)
+
 interface StylesRouteChildren {
   StylesSlugRoute: typeof StylesSlugRoute
 }
@@ -1414,7 +1462,7 @@ const rootRouteChildren: RootRouteChildren = {
   MembershipRoute: MembershipRoute,
   NewsRoute: NewsRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
-  RulesRoute: RulesRoute,
+  RulesRoute: RulesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StylesRoute: StylesRouteWithChildren,
   VerifyRoute: VerifyRouteWithChildren,
@@ -1425,13 +1473,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
