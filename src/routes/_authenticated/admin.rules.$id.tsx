@@ -52,7 +52,10 @@ export const Route = createFileRoute("/_authenticated/admin/rules/$id")({
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-3xl">
           <TextField label="Title" name="title" required defaultValue={data.title} />
           <TextField label="Slug" name="slug" required defaultValue={data.slug} />
+          <ImageUpload name="cover_url" folder="rules" defaultValue={data.cover_url} />
+          <TextField label="Excerpt (short summary shown in the listing)" name="excerpt" maxLength={300} defaultValue={data.excerpt} />
           <TextField label="Sort order" name="sort_order" type="number" defaultValue={data.sort_order} />
+
           <RichEditor name="body" folder="rules" defaultValue={data.body} placeholder="Write the rules section. Use headings, lists, and links." />
           <SaveBar pending={pending} cancelTo="/admin/rules" />
         </form>
