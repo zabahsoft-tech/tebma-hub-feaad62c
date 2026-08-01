@@ -207,14 +207,23 @@ export const adminDeleteRule = createServerFn({ method: "POST" })
   });
 
 // ---------- Dictionary ----------
+const dictMediaSchema = z.object({
+  kind: z.enum(["image", "video", "embed"]),
+  url: z.string().trim().min(1).max(2000),
+  poster_url: z.string().trim().max(2000).optional().nullable(),
+  caption: z.string().trim().max(300).optional().nullable(),
+});
+
 const dictSchema = z.object({
   id: z.string().uuid().optional(),
   slug: z.string().trim().min(1).max(120),
   term: z.string().trim().min(1).max(200),
   description: z.string().max(20000).default(""),
-  image_url: z.string().url().optional().nullable(),
+  image_url: z.string().trim().max(2000).optional().nullable(),
   tags: z.array(z.string().trim().min(1).max(60)).default([]),
+  media: z.array(dictMediaSchema).max(60).default([]),
 });
+
 
 export const adminListDictionary = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
