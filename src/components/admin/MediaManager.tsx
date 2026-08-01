@@ -133,11 +133,12 @@ export function MediaManager({
                   </span>
                 ) : null}
               </div>
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground">Caption</label>
               <input
                 type="text"
                 value={it.caption ?? ""}
                 onChange={(ev) => update(i, { caption: ev.target.value })}
-                placeholder="Caption (optional)"
+                placeholder="Describe this photo or video"
                 maxLength={300}
                 className="w-full border border-border rounded-sm px-2 py-1.5 text-sm bg-background"
               />
