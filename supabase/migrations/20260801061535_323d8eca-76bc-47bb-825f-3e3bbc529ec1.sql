@@ -1,0 +1,1 @@
+ALTER TABLE public.rules_sections ADD COLUMN IF NOT EXISTS cover_url text, ADD COLUMN IF NOT EXISTS excerpt text;

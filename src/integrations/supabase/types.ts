@@ -391,7 +391,9 @@ export type Database = {
       rules_sections: {
         Row: {
           body: string
+          cover_url: string | null
           created_at: string
+          excerpt: string | null
           id: string
           slug: string
           sort_order: number
@@ -400,7 +402,9 @@ export type Database = {
         }
         Insert: {
           body?: string
+          cover_url?: string | null
           created_at?: string
+          excerpt?: string | null
           id?: string
           slug: string
           sort_order?: number
@@ -409,7 +413,9 @@ export type Database = {
         }
         Update: {
           body?: string
+          cover_url?: string | null
           created_at?: string
+          excerpt?: string | null
           id?: string
           slug?: string
           sort_order?: number
