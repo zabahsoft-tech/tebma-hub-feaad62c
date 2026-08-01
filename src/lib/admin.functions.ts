@@ -177,7 +177,15 @@ export const adminUpsertRule = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => ruleSchema.parse(d))
   .handler(async ({ context, data }) => {
     await ensureAdmin(context);
-    const payload = { slug: data.slug, title: data.title, body: data.body ?? "", sort_order: data.sort_order };
+    const payload = {
+      slug: data.slug,
+      title: data.title,
+      body: data.body ?? "",
+      excerpt: data.excerpt || null,
+      cover_url: data.cover_url || null,
+      sort_order: data.sort_order,
+    };
+
     if (data.id) {
       const { error } = await context.supabase.from("rules_sections").update(payload).eq("id", data.id);
       if (error) throw error;
