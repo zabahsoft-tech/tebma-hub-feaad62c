@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { toEmbedUrl } from "@/lib/embed";
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function ensureAdmin(context: any) {
