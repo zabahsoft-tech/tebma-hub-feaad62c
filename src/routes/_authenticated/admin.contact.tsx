@@ -6,6 +6,7 @@ import { TextField, TextArea, SaveBar } from "@/components/admin/AdminForm";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { adminGetContactInfo, adminUpsertContactInfo } from "@/lib/admin.functions";
 import { toast } from "sonner";
+import { codePattern } from "@/lib/cert-code";
 
 const qo = queryOptions({ queryKey: ["admin", "contact-info"], queryFn: () => adminGetContactInfo() });
 
@@ -45,6 +46,9 @@ function ContactInfoPage() {
           youtube: get("youtube"),
           twitter: get("twitter"),
           logo_url: get("logo_url"),
+          cert_code_prefix: get("cert_code_prefix"),
+          cert_code_include_year: fd.get("cert_code_include_year") === "on",
+          cert_code_random_length: Number(fd.get("cert_code_random_length") ?? 6),
         },
       });
       toast.success("Contact info updated");
@@ -92,6 +96,14 @@ function ContactInfoPage() {
           <TextField label="Website" name="website" type="url" defaultValue={data?.website ?? ""} />
         </section>
         <section className="space-y-4">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Certificates</h2>
+          <CertCodeSettingsFields
+            prefix={data?.cert_code_prefix ?? "TBM"}
+            includeYear={data?.cert_code_include_year ?? true}
+            length={data?.cert_code_random_length ?? 6}
+          />
+        </section>
+        <section className="space-y-4">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Social</h2>
           <TextField label="Facebook URL" name="facebook" type="url" defaultValue={data?.facebook ?? ""} />
           <TextField label="Instagram URL" name="instagram" type="url" defaultValue={data?.instagram ?? ""} />
@@ -101,5 +113,34 @@ function ContactInfoPage() {
         <SaveBar pending={pending} cancelTo="/admin" />
       </form>
     </AdminPage>
+  );
+}
+
+function CertCodeSettingsFields({ prefix, includeYear, length }: { prefix: string; includeYear: boolean; length: number }) {
+  const [p, setP] = useState(prefix);
+  const [y, setY] = useState(includeYear);
+  const [l, setL] = useState(length);
+  const preview = codePattern({ cert_code_prefix: p, cert_code_include_year: y, cert_code_random_length: l });
+  return (
+    <div className="space-y-4">
+      <div className="grid sm:grid-cols-2 gap-4">
+        <TextField label="Code prefix" name="cert_code_prefix" value={p} onChange={(e) => setP(e.target.value.toUpperCase())} hint="Letters only, e.g. TBM" />
+        <TextField
+          label="Random part length"
+          name="cert_code_random_length"
+          type="number"
+          value={String(l)}
+          onChange={(e) => setL(Number(e.target.value))}
+          hint="Between 3 and 12 characters."
+        />
+      </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" name="cert_code_include_year" checked={y} onChange={(e) => setY(e.target.checked)} className="size-4" />
+        Include the issue year in the code
+      </label>
+      <p className="text-xs text-muted-foreground">
+        Suggested format for new certificates: <span className="font-mono">{preview}</span>. Admins can still type any code manually.
+      </p>
+    </div>
   );
 }
