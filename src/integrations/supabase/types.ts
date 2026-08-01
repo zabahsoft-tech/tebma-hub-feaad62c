@@ -218,6 +218,8 @@ export type Database = {
           caption: string | null
           created_at: string
           id: string
+          kind: string
+          poster_url: string | null
           sort_order: number
           url: string
         }
@@ -226,6 +228,8 @@ export type Database = {
           caption?: string | null
           created_at?: string
           id?: string
+          kind?: string
+          poster_url?: string | null
           sort_order?: number
           url: string
         }
@@ -234,6 +238,8 @@ export type Database = {
           caption?: string | null
           created_at?: string
           id?: string
+          kind?: string
+          poster_url?: string | null
           sort_order?: number
           url?: string
         }
