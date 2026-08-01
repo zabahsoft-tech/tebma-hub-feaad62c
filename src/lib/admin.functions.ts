@@ -513,6 +513,12 @@ export const adminDashboardStats = createServerFn({ method: "GET" })
 
 // ---------- Contact Info (singleton) ----------
 const contactInfoSchema = z.object({
+  site_title: z.string().trim().max(160).optional().nullable(),
+  site_short_title: z.string().trim().max(80).optional().nullable(),
+  tagline: z.string().trim().max(240).optional().nullable(),
+  contact_intro: z.string().trim().max(600).optional().nullable(),
+  office_hours: z.string().trim().max(200).optional().nullable(),
+  map_embed_url: z.string().trim().max(2000).optional().nullable(),
   hq_address: z.string().trim().max(500).optional().nullable(),
   asia_office: z.string().trim().max(500).optional().nullable(),
   americas_office: z.string().trim().max(500).optional().nullable(),
@@ -547,6 +553,12 @@ export const adminUpsertContactInfo = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     await ensureAdmin(context);
     const payload = {
+      site_title: data.site_title ?? null,
+      site_short_title: data.site_short_title ?? null,
+      tagline: data.tagline ?? null,
+      contact_intro: data.contact_intro ?? null,
+      office_hours: data.office_hours ?? null,
+      map_embed_url: data.map_embed_url ?? null,
       hq_address: data.hq_address ?? null,
       asia_office: data.asia_office ?? null,
       americas_office: data.americas_office ?? null,

@@ -27,12 +27,15 @@ export function SiteHeader() {
   });
   const info = data as {
     logo_url?: string | null;
+    site_short_title?: string | null;
+    site_title?: string | null;
     facebook?: string | null;
     instagram?: string | null;
     youtube?: string | null;
     twitter?: string | null;
   } | null;
   const logoUrl = info?.logo_url ?? null;
+  const siteShort = info?.site_short_title?.trim() || info?.site_title?.trim() || SITE_SHORT;
   const cats = categories ?? [];
   const socials = [
     { label: "Facebook", href: info?.facebook, Icon: Facebook },
@@ -43,7 +46,7 @@ export function SiteHeader() {
 
 
   const mark = logoUrl ? (
-    <img src={logoUrl} alt={`${SITE_SHORT} logo`} className="h-9 w-auto shrink-0 object-contain md:h-10" />
+    <img src={logoUrl} alt={`${siteShort} logo`} className="h-9 w-auto shrink-0 object-contain md:h-10" />
   ) : (
     <div className="size-9 shrink-0 bg-foreground grid place-items-center rounded-sm md:size-10">
       <span className="text-background font-semibold text-lg tracking-tighter md:text-xl">T</span>
@@ -57,7 +60,7 @@ export function SiteHeader() {
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:hidden">
           <Link to="/" className="flex min-w-0 items-center gap-2">
             {mark}
-            <span className="truncate font-medium tracking-tight text-sm uppercase">{SITE_SHORT}</span>
+            <span className="truncate font-medium tracking-tight text-sm uppercase">{siteShort}</span>
           </Link>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
@@ -68,7 +71,7 @@ export function SiteHeader() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[85vw] max-w-sm overflow-y-auto">
               <SheetHeader>
-                <SheetTitle className="text-xs uppercase tracking-widest">{SITE_SHORT}</SheetTitle>
+                <SheetTitle className="text-xs uppercase tracking-widest">{siteShort}</SheetTitle>
               </SheetHeader>
               <nav aria-label="Mobile" className="mt-6 flex flex-col gap-1 pb-10">
                 {NAV_LINKS.map((l) => (
@@ -150,7 +153,7 @@ export function SiteHeader() {
           <Link to="/" className="flex items-center gap-3 group">
             {mark}
             <span className="font-medium tracking-tight text-lg uppercase group-hover:opacity-80 transition-opacity">
-              {SITE_SHORT}
+              {siteShort}
             </span>
           </Link>
           <nav aria-label="Primary" className="flex flex-wrap justify-center items-center gap-x-8 gap-y-2">

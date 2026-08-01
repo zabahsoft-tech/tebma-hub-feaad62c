@@ -202,7 +202,7 @@ export const getContactInfo = createServerFn({ method: "GET" }).handler(async ()
   const s = createServerPublicClient();
   const { data, error } = await s
     .from("site_contact_info")
-    .select("hq_address,asia_office,americas_office,general_email,media_email,phone,website,facebook,instagram,youtube,twitter,logo_url")
+    .select("site_title,site_short_title,tagline,contact_intro,map_embed_url,office_hours,hq_address,asia_office,americas_office,general_email,media_email,phone,website,facebook,instagram,youtube,twitter,logo_url")
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
