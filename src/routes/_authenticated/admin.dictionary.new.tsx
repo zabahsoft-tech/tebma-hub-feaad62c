@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { MediaManager, type MediaItem } from "@/components/admin/MediaManager";
 import { RichEditor } from "@/components/admin/RichEditor";
 import { adminUpsertDictionary } from "@/lib/admin.functions";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/new")({
       setPending(true);
       const fd = new FormData(e.currentTarget);
       const tags = String(fd.get("tags") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+      const media = JSON.parse(String(fd.get("media") ?? "[]")) as MediaItem[];
       try {
         await adminUpsertDictionary({
           data: {
@@ -24,6 +26,7 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/new")({
             description: String(fd.get("description") ?? ""),
             image_url: String(fd.get("image_url") ?? "") || null,
             tags,
+            media,
           },
         });
         toast.success("Created");
@@ -39,7 +42,8 @@ export const Route = createFileRoute("/_authenticated/admin/dictionary/new")({
         <form onSubmit={onSubmit} className="bg-background border border-border rounded-md p-6 space-y-4 max-w-3xl">
           <TextField label="Term" name="term" required />
           <TextField label="Slug" name="slug" required />
-          <ImageUpload name="image_url" label="Image" folder="dictionary" />
+          <ImageUpload name="image_url" label="Cover image" folder="dictionary" />
+          <MediaManager name="media" folder="dictionary" />
           <TextField label="Tags (comma separated)" name="tags" placeholder="stance, defense, beginner" />
           <RichEditor name="description" folder="dictionary" placeholder="Describe the technique, stance, or term." />
           <SaveBar pending={pending} cancelTo="/admin/dictionary" />
