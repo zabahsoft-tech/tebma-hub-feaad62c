@@ -2,6 +2,8 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { PageShell } from "@/components/site/PageShell";
 import { getDictionaryBySlug } from "@/lib/public.functions";
+import { MediaGallery, type PublicMediaItem } from "@/components/site/MediaGallery";
+
 
 const qo = (slug: string) =>
   queryOptions({ queryKey: ["dict", slug], queryFn: () => getDictionaryBySlug({ data: { slug } }) });
