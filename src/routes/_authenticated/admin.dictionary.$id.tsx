@@ -4,8 +4,10 @@ import { useState } from "react";
 import { AdminPage } from "@/components/admin/AdminShell";
 import { TextField, SaveBar } from "@/components/admin/AdminForm";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { MediaManager, type MediaItem } from "@/components/admin/MediaManager";
 import { RichEditor } from "@/components/admin/RichEditor";
 import { adminGetDictionary, adminUpsertDictionary } from "@/lib/admin.functions";
+
 import { toast } from "sonner";
 
 const qo = (id: string) => queryOptions({ queryKey: ["admin", "dict", id], queryFn: () => adminGetDictionary({ data: { id } }) });
