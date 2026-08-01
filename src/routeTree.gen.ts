@@ -23,6 +23,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VerifyIndexRouteImport } from './routes/verify.index'
 import { Route as RulesIndexRouteImport } from './routes/rules.index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as StylesSlugRouteImport } from './routes/styles.$slug'
@@ -138,6 +139,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyIndexRoute = VerifyIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VerifyRoute,
 } as any)
 const RulesIndexRoute = RulesIndexRouteImport.update({
   id: '/',
@@ -425,6 +431,7 @@ export interface FileRoutesByFullPath {
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/rules/': typeof RulesIndexRoute
+  '/verify/': typeof VerifyIndexRoute
   '/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/admin/contact': typeof AuthenticatedAdminContactRoute
@@ -475,7 +482,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
-  '/verify': typeof VerifyRouteWithChildren
   '/c/$slug': typeof CSlugRoute
   '/dictionary/$slug': typeof DictionarySlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -484,6 +490,7 @@ export interface FileRoutesByTo {
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/rules': typeof RulesIndexRoute
+  '/verify': typeof VerifyIndexRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/memberships': typeof AuthenticatedAdminMembershipsRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
@@ -539,6 +546,7 @@ export interface FileRoutesById {
   '/styles/$slug': typeof StylesSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/rules/': typeof RulesIndexRoute
+  '/verify/': typeof VerifyIndexRoute
   '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRouteWithChildren
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRouteWithChildren
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
@@ -602,6 +610,7 @@ export interface FileRouteTypes {
     | '/styles/$slug'
     | '/verify/$code'
     | '/rules/'
+    | '/verify/'
     | '/admin/categories'
     | '/admin/certificates'
     | '/admin/contact'
@@ -652,7 +661,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/styles'
-    | '/verify'
     | '/c/$slug'
     | '/dictionary/$slug'
     | '/news/$slug'
@@ -661,6 +669,7 @@ export interface FileRouteTypes {
     | '/styles/$slug'
     | '/verify/$code'
     | '/rules'
+    | '/verify'
     | '/admin/contact'
     | '/admin/memberships'
     | '/admin/messages'
@@ -715,6 +724,7 @@ export interface FileRouteTypes {
     | '/styles/$slug'
     | '/verify/$code'
     | '/rules/'
+    | '/verify/'
     | '/_authenticated/admin/categories'
     | '/_authenticated/admin/certificates'
     | '/_authenticated/admin/contact'
@@ -873,6 +883,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/verify/': {
+      id: '/verify/'
+      path: '/'
+      fullPath: '/verify/'
+      preLoaderRoute: typeof VerifyIndexRouteImport
+      parentRoute: typeof VerifyRoute
     }
     '/rules/': {
       id: '/rules/'
@@ -1442,10 +1459,12 @@ const StylesRouteWithChildren =
 
 interface VerifyRouteChildren {
   VerifyCodeRoute: typeof VerifyCodeRoute
+  VerifyIndexRoute: typeof VerifyIndexRoute
 }
 
 const VerifyRouteChildren: VerifyRouteChildren = {
   VerifyCodeRoute: VerifyCodeRoute,
+  VerifyIndexRoute: VerifyIndexRoute,
 }
 
 const VerifyRouteWithChildren =
