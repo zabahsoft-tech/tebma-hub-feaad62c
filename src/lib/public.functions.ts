@@ -95,10 +95,11 @@ export const listGallery = createServerFn({ method: "GET" }).handler(async () =>
     s.from("gallery_albums").select("id,slug,title,description,cover_url").order("created_at", { ascending: false }),
     s
       .from("gallery_photos")
-      .select("id,album_id,url,caption,sort_order")
+      .select("id,album_id,kind,url,poster_url,caption,sort_order")
       .order("sort_order")
       .order("created_at", { ascending: false }),
   ]);
+
   return { albums: albums ?? [], photos: photos ?? [] };
 });
 
