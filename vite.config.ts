@@ -19,6 +19,9 @@ export default defineConfig({
       enabled: true,
       // Only the SPA shell is emitted; no route is rendered ahead of time.
       crawlLinks: false,
+      // Auth-gated admin routes redirect during prerender and crash the build.
+      filter: ({ path }: { path: string }) => !path.startsWith("/admin"),
     },
+
   },
 });
