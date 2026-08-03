@@ -9,12 +9,12 @@ bun install
 bun run build:spa
 ```
 
-The static output is written to **`dist/client`** (assets, prerendered route shells,
-`index.html`, and `.htaccess`).
+The static output is written to a single **`dist`** folder (`index.html`, `.htaccess`,
+`assets/`, and the other static files). There is no `client/` or `server/` subfolder.
 
 ## 2. Upload
 
-1. Zip the **contents** of `dist/client` (not the folder itself).
+1. Zip the **contents** of `dist` (not the folder itself).
 2. In cPanel → File Manager, open `public_html` (or your subdomain's document root).
 3. Upload the zip and extract it there.
 4. Confirm `.htaccess` is present (enable "Show hidden files" in File Manager settings).
