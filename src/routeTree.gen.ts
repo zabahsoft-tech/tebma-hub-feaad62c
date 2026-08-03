@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as StylesRouteImport } from './routes/styles'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as NewsRouteImport } from './routes/news'
@@ -54,7 +53,6 @@ import { Route as AuthenticatedAdminGalleryIndexRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminDictionaryIndexRouteImport } from './routes/_authenticated/admin.dictionary.index'
 import { Route as AuthenticatedAdminCertificatesIndexRouteImport } from './routes/_authenticated/admin.certificates.index'
 import { Route as AuthenticatedAdminCategoriesIndexRouteImport } from './routes/_authenticated/admin.categories.index'
-import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media.$'
 import { Route as AuthenticatedAdminStylesNewRouteImport } from './routes/_authenticated/admin.styles.new'
 import { Route as AuthenticatedAdminStylesIdRouteImport } from './routes/_authenticated/admin.styles.$id'
 import { Route as AuthenticatedAdminRulesNewRouteImport } from './routes/_authenticated/admin.rules.new'
@@ -80,11 +78,6 @@ const VerifyRoute = VerifyRouteImport.update({
 const StylesRoute = StylesRouteImport.update({
   id: '/styles',
   path: '/styles',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RulesRoute = RulesRouteImport.update({
@@ -312,11 +305,6 @@ const AuthenticatedAdminCategoriesIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminCategoriesRoute,
   } as any)
-const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
-  id: '/api/public/media/$',
-  path: '/api/public/media/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedAdminStylesNewRoute =
   AuthenticatedAdminStylesNewRouteImport.update({
     id: '/new',
@@ -425,7 +413,6 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/rules': typeof RulesRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
   '/verify': typeof VerifyRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -467,7 +454,6 @@ export interface FileRoutesByFullPath {
   '/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
   '/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
-  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/admin/categories/': typeof AuthenticatedAdminCategoriesIndexRoute
   '/admin/certificates/': typeof AuthenticatedAdminCertificatesIndexRoute
   '/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
@@ -486,7 +472,6 @@ export interface FileRoutesByTo {
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
   '/c/$slug': typeof CSlugRoute
   '/dictionary/$slug': typeof DictionarySlugRoute
@@ -518,7 +503,6 @@ export interface FileRoutesByTo {
   '/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
   '/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
-  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/admin/categories': typeof AuthenticatedAdminCategoriesIndexRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesIndexRoute
   '/admin/dictionary': typeof AuthenticatedAdminDictionaryIndexRoute
@@ -541,7 +525,6 @@ export interface FileRoutesById {
   '/news': typeof NewsRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/rules': typeof RulesRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/styles': typeof StylesRouteWithChildren
   '/verify': typeof VerifyRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -583,7 +566,6 @@ export interface FileRoutesById {
   '/_authenticated/admin/rules/new': typeof AuthenticatedAdminRulesNewRoute
   '/_authenticated/admin/styles/$id': typeof AuthenticatedAdminStylesIdRoute
   '/_authenticated/admin/styles/new': typeof AuthenticatedAdminStylesNewRoute
-  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
   '/_authenticated/admin/categories/': typeof AuthenticatedAdminCategoriesIndexRoute
   '/_authenticated/admin/certificates/': typeof AuthenticatedAdminCertificatesIndexRoute
   '/_authenticated/admin/dictionary/': typeof AuthenticatedAdminDictionaryIndexRoute
@@ -606,7 +588,6 @@ export interface FileRouteTypes {
     | '/news'
     | '/reset-password'
     | '/rules'
-    | '/sitemap.xml'
     | '/styles'
     | '/verify'
     | '/admin'
@@ -648,7 +629,6 @@ export interface FileRouteTypes {
     | '/admin/rules/new'
     | '/admin/styles/$id'
     | '/admin/styles/new'
-    | '/api/public/media/$'
     | '/admin/categories/'
     | '/admin/certificates/'
     | '/admin/dictionary/'
@@ -667,7 +647,6 @@ export interface FileRouteTypes {
     | '/membership'
     | '/news'
     | '/reset-password'
-    | '/sitemap.xml'
     | '/styles'
     | '/c/$slug'
     | '/dictionary/$slug'
@@ -699,7 +678,6 @@ export interface FileRouteTypes {
     | '/admin/rules/new'
     | '/admin/styles/$id'
     | '/admin/styles/new'
-    | '/api/public/media/$'
     | '/admin/categories'
     | '/admin/certificates'
     | '/admin/dictionary'
@@ -721,7 +699,6 @@ export interface FileRouteTypes {
     | '/news'
     | '/reset-password'
     | '/rules'
-    | '/sitemap.xml'
     | '/styles'
     | '/verify'
     | '/_authenticated/admin'
@@ -763,7 +740,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/rules/new'
     | '/_authenticated/admin/styles/$id'
     | '/_authenticated/admin/styles/new'
-    | '/api/public/media/$'
     | '/_authenticated/admin/categories/'
     | '/_authenticated/admin/certificates/'
     | '/_authenticated/admin/dictionary/'
@@ -786,12 +762,10 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   RulesRoute: typeof RulesRouteWithChildren
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StylesRoute: typeof StylesRouteWithChildren
   VerifyRoute: typeof VerifyRouteWithChildren
   CSlugRoute: typeof CSlugRoute
   PSlugRoute: typeof PSlugRoute
-  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -808,13 +782,6 @@ declare module '@tanstack/react-router' {
       path: '/styles'
       fullPath: '/styles'
       preLoaderRoute: typeof StylesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rules': {
@@ -1110,13 +1077,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/categories/'
       preLoaderRoute: typeof AuthenticatedAdminCategoriesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminCategoriesRoute
-    }
-    '/api/public/media/$': {
-      id: '/api/public/media/$'
-      path: '/api/public/media/$'
-      fullPath: '/api/public/media/$'
-      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/styles/new': {
       id: '/_authenticated/admin/styles/new'
@@ -1501,12 +1461,10 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   RulesRoute: RulesRouteWithChildren,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
   StylesRoute: StylesRouteWithChildren,
   VerifyRoute: VerifyRouteWithChildren,
   CSlugRoute: CSlugRoute,
   PSlugRoute: PSlugRoute,
-  ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
