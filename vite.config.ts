@@ -7,10 +7,18 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  // Static output only — no server runtime is deployed.
+  nitro: false,
   tanstackStart: {
-    // Full client-side rendering: every route ships as a static SPA shell.
+    // Redirect TanStack Start's bundled server entry to src/server.ts.
+    server: { entry: "server" },
+    // Full client-side rendering: the app ships as a static SPA shell.
     // This keeps the build deployable on plain static hosting (cPanel).
     spa: { enabled: true },
-    prerender: { enabled: true },
+    prerender: {
+      enabled: true,
+      // Only the SPA shell is emitted; no route is rendered ahead of time.
+      crawlLinks: false,
+    },
   },
 });
