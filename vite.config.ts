@@ -8,8 +8,9 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
   tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
-    server: { entry: "server" },
+    // Full client-side rendering: every route ships as a static SPA shell.
+    // This keeps the build deployable on plain static hosting (cPanel).
+    spa: { enabled: true },
+    prerender: { enabled: true },
   },
 });

@@ -1,38 +1,37 @@
-import { adminUploadMedia, adminCreateMediaUploadUrl } from "@/lib/media.functions";
+import { supabase } from "@/integrations/supabase/client";
 
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      const idx = result.indexOf(",");
-      resolve(idx >= 0 ? result.slice(idx + 1) : result);
-    };
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
+const PUBLIC_BASE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/media`;
+
+const ALLOWED_IMAGE = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
+const ALLOWED_VIDEO = new Set(["video/mp4", "video/webm", "video/quicktime", "video/ogg"]);
+
+function buildKey(folder: string, file: File) {
+  const safeFolder = folder.replace(/[^a-z0-9-]/gi, "") || "misc";
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
+  return `${safeFolder}/${crypto.randomUUID()}.${ext || "bin"}`;
+}
+
+async function upload(file: File, folder: string): Promise<string> {
+  const key = buildKey(folder, file);
+  const { error } = await supabase.storage.from("media").upload(key, file, {
+    contentType: file.type || "application/octet-stream",
+    upsert: false,
   });
+  if (error) throw error;
+  return `${PUBLIC_BASE}/${key}`;
 }
 
 export async function uploadMediaFile(file: File, folder: string): Promise<string> {
   if (file.size > 10 * 1024 * 1024) throw new Error("Max 10MB per file");
-  const base64 = await fileToBase64(file);
-  const res = await adminUploadMedia({
-    data: { folder, filename: file.name, contentType: file.type, base64 },
-  });
-  return res.url;
+  if (!ALLOWED_IMAGE.has(file.type)) throw new Error("Unsupported file type");
+  return upload(file, folder);
 }
 
-/** Direct-to-storage upload via signed URL. Used for video files. */
+/** Direct-to-storage upload for large files (video). */
 export async function uploadLargeMediaFile(file: File, folder: string): Promise<string> {
   if (file.size > 100 * 1024 * 1024) throw new Error("Max 100MB per file");
-  const res = await adminCreateMediaUploadUrl({
-    data: { folder, filename: file.name, contentType: file.type },
-  });
-  const put = await fetch(res.signedUrl, {
-    method: "PUT",
-    headers: { "content-type": file.type || "application/octet-stream" },
-    body: file,
-  });
-  if (!put.ok) throw new Error(`Upload failed (${put.status})`);
-  return res.url;
+  if (!ALLOWED_VIDEO.has(file.type) && !ALLOWED_IMAGE.has(file.type)) {
+    throw new Error("Unsupported file type");
+  }
+  return upload(file, folder);
 }
