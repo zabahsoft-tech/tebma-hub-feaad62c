@@ -6,14 +6,15 @@ The site is now a pure client-side SPA — no Node.js runtime is required on the
 
 ```bash
 bun install
-bun run build
+bun run build:spa
 ```
 
-The static output is written to `.output/public` (client assets + `index.html` shell + `.htaccess`).
+The static output is written to **`dist/client`** (assets, prerendered route shells,
+`index.html`, and `.htaccess`).
 
 ## 2. Upload
 
-1. Zip the **contents** of `.output/public` (not the folder itself).
+1. Zip the **contents** of `dist/client` (not the folder itself).
 2. In cPanel → File Manager, open `public_html` (or your subdomain's document root).
 3. Upload the zip and extract it there.
 4. Confirm `.htaccess` is present (enable "Show hidden files" in File Manager settings).
@@ -21,11 +22,14 @@ The static output is written to `.output/public` (client assets + `index.html` s
 ## 3. Verify
 
 - Open the domain — the site should load.
-- Refresh on a deep link such as `/news` — the `.htaccess` rewrite serves `index.html` so routing works.
+- Refresh on a deep link such as `/news` — the `.htaccess` rewrite serves `index.html`,
+  so client-side routing keeps working.
 - Sign in at `/auth` and confirm the admin dashboard loads.
 
 ## Notes
 
-- All data, auth, and file uploads go directly from the browser to the backend, so nothing else needs configuring on cPanel.
-- `sitemap.xml` is a static file in `public/`. Add new top-level pages there when you create them.
-- Because rendering is client-side, social/crawler previews use the shared metadata in the HTML shell.
+- All data, authentication, and file uploads go straight from the browser to the backend,
+  so nothing else needs configuring on cPanel.
+- `sitemap.xml` is a static file in `public/`. Add new top-level pages there when you
+  create them.
+- Rendering is client-side, so social/crawler previews use the metadata in the HTML shell.
